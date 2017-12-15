@@ -60,9 +60,8 @@ class Opaque implements DataType
         try {
             $element = Element::fromDER($binary);
             $class = $element->typeClass();
-            $tag = $element->tag();
-            if ($class !== Identifier::CLASS_APPLICATION || $tag !== self::TAG) {
-                throw new DecodeError(__CLASS__ . ' expects asn1 app class with tag ' . self::TAG);
+            if ($class !== Identifier::CLASS_APPLICATION) {
+                throw new DecodeError(__CLASS__ . ' expects asn1 app class');
             }
             $app = $element->asUnspecified()->asApplication();
         } catch (\UnexpectedValueException|DecodeException $e) {
@@ -79,7 +78,7 @@ class Opaque implements DataType
     public static function fromASN1(ApplicationType $element): self
     {
         try {
-            $value = $element->asImplicit(Element::TYPE_OCTET_STRING)->asOctetString()->string();
+            $value = $element->asImplicit(Element::TYPE_OCTET_STRING, self::TAG)->asOctetString()->string();
         } catch (\UnexpectedValueException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }

@@ -37,10 +37,10 @@ interface DataTypeVisitor
     public function visitNull();
 
     /**
-     * @param string $octetString
+     * @param string $ipString
      * @return mixed
      */
-    public function visitIpAddress(string $octetString);
+    public function visitIpAddress(string $ipString);
 
     /**
      * @param string $octetString
@@ -64,7 +64,7 @@ interface DataTypeVisitor
      * @param int $value
      * @return mixed
      */
-    public function visitGauge32(int $value);
+    public function visitGauge32($value);
 
     /**
      * @param string|int $value
@@ -76,7 +76,7 @@ interface DataTypeVisitor
      * @param int $value
      * @return mixed
      */
-    public function visitTimeTicks(int $value);
+    public function visitTimeTicks($value);
 
     /**
      * @param string $value

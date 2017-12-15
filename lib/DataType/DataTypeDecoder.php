@@ -59,7 +59,7 @@ class DataTypeDecoder
                         case UInteger32::TAG:
                             return UInteger32::fromASN1($app);
                         default:
-                            throw new \UnexpectedValueException("Unknown application data type, tag=$tag");
+                            throw new DecodeError("Unknown application data type, tag=$tag");
                     }
 
                 case Identifier::CLASS_UNIVERSAL:
@@ -76,7 +76,7 @@ class DataTypeDecoder
                             return new NullValue();
                         default:
                             $type_name = Element::tagToName($tag);
-                            throw new \UnexpectedValueException("SNMP does not support ASN1 Universal type '$type_name'");
+                            throw new DecodeError("SNMP does not support ASN1 Universal type '$type_name'");
                     }
 
                 case Identifier::CLASS_CONTEXT_SPECIFIC:
@@ -88,7 +88,7 @@ class DataTypeDecoder
                         case EndOfMibView::TAG:
                             return new EndOfMibView();
                         default:
-                            throw new \UnexpectedValueException("Unknown context specific data type, tag=$tag");
+                            throw new DecodeError("Unknown context specific data type, tag=$tag");
                     }
                 default:
                     $class_name = Identifier::classToName($class);

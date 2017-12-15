@@ -83,11 +83,11 @@ class BitString implements DataType
     {
         try {
             $bit_string = $element->asBitString();
-            $value = $bit_string->string();
-            $unused = $bit_string->unusedBits();
         } catch (\UnexpectedValueException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }
+        $value = $bit_string->string();
+        $unused = $bit_string->unusedBits();
         return new self($value, $unused);
     }
 

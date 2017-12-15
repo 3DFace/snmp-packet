@@ -15,7 +15,7 @@ class Gauge32 extends AbstractUnsigned32
 
     public function acceptVisitor(DataTypeVisitor $visitor)
     {
-        return $visitor->visitCounter32($this->value);
+        return $visitor->visitGauge32($this->value);
     }
 
 }

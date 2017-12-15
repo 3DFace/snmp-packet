@@ -41,14 +41,14 @@ abstract class AbstractNoValue implements DataType
     public static function fromBinary(string $binary): self
     {
         try {
-            $bit_string = Element::fromDER($binary)->asUnspecified();
+            $bit_string = UnspecifiedType::fromDER($binary);
             $class = $bit_string->typeClass();
             $tag = $bit_string->tag();
             $self_tag = static::getTag();
             if ($class !== Identifier::CLASS_CONTEXT_SPECIFIC || $tag !== $self_tag) {
                 throw new DecodeError(__CLASS__ . ' expects asn1 context specific tag ' . $self_tag);
             }
-        } catch (\UnexpectedValueException|DecodeException $e) {
+        } catch (DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }
         return self::fromASN1($bit_string);

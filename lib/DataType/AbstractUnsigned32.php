@@ -14,12 +14,17 @@ use dface\SnmpPacket\Exception\DecodeError;
 abstract class AbstractUnsigned32 implements DataType
 {
 
+    public const MAX = 4294967295;
+
     /** @var int|string */
     protected $value;
 
+    /**
+     * @param int|string $value
+     */
     public function __construct($value)
     {
-        if (gmp_cmp($value, 0) < 0 || gmp_cmp($value, 4294967295) > 0) {
+        if (gmp_cmp($value, 0) < 0 || gmp_cmp($value, self::MAX) > 0) {
             throw new \InvalidArgumentException('Counter32 must be in range [0...4294967295]');
         }
         $this->value = $value;
@@ -62,10 +67,8 @@ abstract class AbstractUnsigned32 implements DataType
         try {
             $element = Element::fromDER($binary);
             $class = $element->typeClass();
-            $tag = $element->tag();
-            $self_tag = static::getTag();
-            if ($class !== Identifier::CLASS_APPLICATION || $tag !== $self_tag) {
-                throw new DecodeError(__CLASS__ . " expects asn1 app class with tag $self_tag");
+            if ($class !== Identifier::CLASS_APPLICATION) {
+                throw new DecodeError(__CLASS__ . ' expects asn1 app class');
             }
             $app = $element->asUnspecified()->asApplication();
         } catch (\UnexpectedValueException|DecodeException $e) {
@@ -81,8 +84,9 @@ abstract class AbstractUnsigned32 implements DataType
      */
     public static function fromASN1(ApplicationType $element): self
     {
+        $self_tag = static::getTag();
         try {
-            $value = $element->asImplicit(Element::TYPE_INTEGER)->asInteger()->number();
+            $value = $element->asImplicit(Element::TYPE_INTEGER, $self_tag)->asInteger()->number();
         } catch (\UnexpectedValueException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }

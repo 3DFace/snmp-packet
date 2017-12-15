@@ -18,6 +18,10 @@ class Oid implements DataType
 
     public function __construct(string $value)
     {
+        /** @noinspection NotOptimalRegularExpressionsInspection */
+        if(!preg_match('/^([1-9][0-9]{0,3}|0)(\.([1-9][0-9]{0,3}|0))+$/', $value)){
+            throw new \InvalidArgumentException('Bad oid: '.$value);
+        }
         $this->value = $value;
     }
 
@@ -34,11 +38,6 @@ class Oid implements DataType
     public function equals($val): bool
     {
         return $val instanceof self && $val->value === $this->value;
-    }
-
-    public function __toString()
-    {
-        return $this->value;
     }
 
     public function toASN1(): Element

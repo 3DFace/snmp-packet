@@ -13,13 +13,16 @@ use dface\SnmpPacket\Exception\DecodeError;
 class Integer32 implements DataType
 {
 
+    public const MIN = -2147483648;
+    public const MAX = 2147483647;
+
     /** @var int */
     private $value;
 
     public function __construct(int $value)
     {
-        if ($value < -2147483648 || $value > 2147483647) {
-            throw new \InvalidArgumentException('Integer32 mus be in range [-2147483648...2147483647]');
+        if ($value < self::MIN || $value > self::MAX) {
+            throw new \InvalidArgumentException('Integer32 mus be in range ['.self::MIN.'...'.self::MAX.']');
         }
         $this->value = $value;
     }
