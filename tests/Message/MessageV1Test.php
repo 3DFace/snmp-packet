@@ -3,6 +3,9 @@
 
 namespace dface\SnmpPacket\Message;
 
+use ASN1\Type\Constructed\Sequence;
+use ASN1\Type\Primitive\Integer;
+use ASN1\Type\Primitive\OctetString;
 use dface\SnmpPacket\DataType\NullValue;
 use dface\SnmpPacket\DataType\Oid;
 use dface\SnmpPacket\Exception\DecodeError;
@@ -35,7 +38,7 @@ class MessageV1Test extends TestCase
     public function testDecoded(): void
     {
         $bin = hex2bin(self::get_request_example);
-        $decodedMessage = MessageDecoder::fromBinary($bin);
+        $decodedMessage = MessageV1::fromBinary($bin);
 
         $pdu_body = new BasicPDUBody(1, 0, 0, new VarBindList(...[
             new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
@@ -44,6 +47,50 @@ class MessageV1Test extends TestCase
         $testMessage = new MessageV1(0, 'private', $pdu);
 
         $this->assertTrue($testMessage->equals($decodedMessage));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testNonSequenceFails()
+    {
+        $this->expectException(DecodeError::class);
+        MessageV1::fromBinary(hex2bin('0500'));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadSequenceCountFails()
+    {
+        $this->expectException(DecodeError::class);
+        MessageV1::fromASN1(new Sequence(
+            new Integer(1)));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadSequenceElementsFails()
+    {
+        $this->expectException(DecodeError::class);
+        MessageV1::fromASN1(new Sequence(
+            new OctetString('asd'),
+            new Integer(1),
+            new Integer(1)));
+    }
+
+    public function testGetters(){
+
+        $pdu_body = new BasicPDUBody(1, 0, 0, new VarBindList(...[
+            new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
+        ]));
+        $pdu = new GetRequestPDU($pdu_body);
+
+        $msg = new MessageV1(0, 'public', $pdu);
+        $this->assertEquals(0, $msg->getVersion());
+        $this->assertEquals('public', $msg->getCommunity());
+        $this->assertTrue($pdu->equals($msg->getPdu()));
     }
 
 }

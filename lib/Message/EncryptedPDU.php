@@ -54,7 +54,7 @@ class EncryptedPDU implements ScopedPDUData
         try {
             $element = UnspecifiedType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
-            throw new DecodeError('Cant decode HeaderData: ' . $e->getMessage(), 0, $e);
+            throw new DecodeError('Cant decode EncryptedPDU: ' . $e->getMessage(), 0, $e);
         }
         return self::fromASN1($element);
     }
@@ -66,9 +66,6 @@ class EncryptedPDU implements ScopedPDUData
      */
     public static function fromASN1(UnspecifiedType $element): self
     {
-        if (!$element instanceof OctetString) {
-            throw new DecodeError('EncryptedPDU must be an octet string');
-        }
         try {
             $content = $element->asOctetString()->string();
         } catch (\UnexpectedValueException $e) {

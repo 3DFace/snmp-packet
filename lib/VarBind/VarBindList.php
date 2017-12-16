@@ -85,7 +85,7 @@ class VarBindList
     public static function fromBinary(string $binary): self
     {
         try {
-            $tagged = Element::fromDER($binary)->asUnspecified()->asSequence();
+            $tagged = UnspecifiedType::fromDER($binary)->asSequence();
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError('Cant decode VarBindList: ' . $e->getMessage(), 0, $e);
         }

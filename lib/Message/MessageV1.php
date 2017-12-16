@@ -47,10 +47,8 @@ class MessageV1 implements Message
 
     public function equals($message): bool
     {
-        if (!$message instanceof self) {
-            return false;
-        }
-        return $message->version === $this->version
+        return $message instanceof self
+            && $message->version === $this->version
             && $message->community === $this->community
             && $message->pdu->equals($this->pdu);
     }

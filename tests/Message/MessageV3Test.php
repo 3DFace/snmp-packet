@@ -3,6 +3,9 @@
 
 namespace dface\SnmpPacket\Message;
 
+use ASN1\Type\Constructed\Sequence;
+use ASN1\Type\Primitive\Integer;
+use ASN1\Type\Primitive\OctetString;
 use dface\SnmpPacket\DataType\Counter32;
 use dface\SnmpPacket\DataType\NullValue;
 use dface\SnmpPacket\DataType\Oid;
@@ -46,7 +49,7 @@ class MessageV3Test extends TestCase
     public function testGetRequestDecoded(): void
     {
         $bin = hex2bin(self::get_request_example);
-        $decodedMessage = MessageDecoder::fromBinary($bin);
+        $decodedMessage = MessageV3::fromBinary($bin);
 
         $pdu_body = new BasicPDUBody(451495112, 0, 0, new VarBindList(
             new VarBind(new Oid('1.3.6.1.2.1.1.3.0'), new NullValue())
@@ -83,7 +86,7 @@ class MessageV3Test extends TestCase
     public function testGetResponseDecoded(): void
     {
         $bin = hex2bin(self::get_response_example);
-        $decodedMessage = MessageDecoder::fromBinary($bin);
+        $decodedMessage = MessageV3::fromBinary($bin);
 
         $pdu_body = new BasicPDUBody(451495112, 0, 0, new VarBindList(
             new VarBind(new Oid('1.3.6.1.2.1.1.3.0'), new TimeTicks('96136448'))
@@ -104,7 +107,7 @@ class MessageV3Test extends TestCase
     public function testReportDecoded(): void
     {
         $bin = hex2bin(self::report_example);
-        $decodedMessage = MessageDecoder::fromBinary($bin);
+        $decodedMessage = MessageV3::fromBinary($bin);
 
         $pdu_body = new BasicPDUBody(656998610, 0, 0, new VarBindList(
             new VarBind(new Oid('1.3.6.1.6.3.15.1.1.4.0'), new Counter32(1174))
@@ -125,7 +128,7 @@ class MessageV3Test extends TestCase
     public function testGetRequestDiscoveryDecoded(): void
     {
         $bin = hex2bin(self::get_request_discovery_example);
-        $decodedMessage = MessageDecoder::fromBinary($bin);
+        $decodedMessage = MessageV3::fromBinary($bin);
 
         $pdu_body = new BasicPDUBody(656998610, 0, 0, new VarBindList());
         $pdu = new GetRequestPDU($pdu_body);
@@ -134,6 +137,55 @@ class MessageV3Test extends TestCase
         $testMessage = new MessageV3(3, $header, hex2bin('300e0400020100020100040004000400'), $scoped_pdu);
 
         $this->assertTrue($testMessage->equals($decodedMessage));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testNonSequenceFails()
+    {
+        $this->expectException(DecodeError::class);
+        MessageV3::fromBinary(hex2bin('0500'));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadSequenceCountFails()
+    {
+        $this->expectException(DecodeError::class);
+        MessageV3::fromASN1(new Sequence(
+            new Integer(1)));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadSequenceElementsFails()
+    {
+        $this->expectException(DecodeError::class);
+        MessageV3::fromASN1(new Sequence(
+            new OctetString('asd'),
+            new Integer(1),
+            new Integer(1),
+            new Integer(1)));
+    }
+
+    public function testGetters(){
+
+        $pdu_body = new BasicPDUBody(1, 0, 0, new VarBindList(...[
+            new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
+        ]));
+        $pdu = new GetRequestPDU($pdu_body);
+        $scoped_pdu = new ScopedPDU('1', '2', $pdu);
+        $headers = new HeaderData(1, 1, 1, 1);
+
+        $msg = new MessageV3(3, $headers, 'asd', $scoped_pdu);
+
+        $this->assertEquals(3, $msg->getVersion());
+        $this->assertTrue($headers->equals($msg->getGlobalData()));
+        $this->assertEquals('asd', $msg->getSecurityParameters());
+        $this->assertTrue($scoped_pdu->equals($msg->getData()));
     }
 
 }

@@ -3,9 +3,9 @@
 
 namespace dface\SnmpPacket\VarBind;
 
-use ASN1\Element;
 use ASN1\Exception\DecodeException;
 use ASN1\Type\Constructed\Sequence;
+use ASN1\Type\UnspecifiedType;
 use dface\SnmpPacket\DataType\DataType;
 use dface\SnmpPacket\DataType\DataTypeDecoder;
 use dface\SnmpPacket\DataType\Oid;
@@ -61,15 +61,10 @@ class VarBind
         try {
             $oid_obj = $var_bind->at(0);
             $val_obj = $var_bind->at(1);
-        } catch (\OutOfBoundsException|\UnexpectedValueException $e) {
-            throw new DecodeError('Variable binding must be a sequence of [oid, value]');
-        }
-
-        try {
             $oid_str = $oid_obj->asObjectIdentifier()->oid();
             $oid = new Oid($oid_str);
-        } catch (\UnexpectedValueException  $e) {
-            throw new DecodeError('Cant decode variable binding oid: ' . $e->getMessage(), 0, $e);
+        } catch (\OutOfBoundsException|\UnexpectedValueException  $e) {
+            throw new DecodeError('Variable binding must be a sequence of [oid, value]');
         }
 
         $val_snmp = DataTypeDecoder::fromASN1($val_obj);
@@ -91,7 +86,7 @@ class VarBind
     public static function fromBinary(string $binary): self
     {
         try {
-            $tagged = Element::fromDER($binary)->asUnspecified()->asSequence();
+            $tagged = UnspecifiedType::fromDER($binary)->asSequence();
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError('Cant decode variable binding: ' . $e->getMessage(), 0, $e);
         }
