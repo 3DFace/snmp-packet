@@ -3,12 +3,16 @@
 
 namespace PDU;
 
+use ASN1\Type\Constructed\Sequence;
+use ASN1\Type\Primitive\Integer;
+use ASN1\Type\Primitive\OctetString;
+use ASN1\Type\Tagged\ImplicitlyTaggedType;
+use dface\SnmpPacket\DataType\NullValue;
 use dface\SnmpPacket\DataType\Oid;
 use dface\SnmpPacket\DataType\TimeTicks;
 use dface\SnmpPacket\Exception\DecodeError;
 use dface\SnmpPacket\PDU\PDUDecoder;
 use dface\SnmpPacket\PDU\TrapPDU;
-use dface\SnmpPacket\PDU\TrapPDUBody;
 use dface\SnmpPacket\VarBind\VarBind;
 use dface\SnmpPacket\VarBind\VarBindList;
 use PHPUnit\Framework\TestCase;
@@ -20,12 +24,10 @@ class TrapPDUTest extends TestCase
 
     public function testEncoded()
     {
-        $pdu_body = new TrapPDUBody('1.3.6.1.2.1.1.3.0', '127.0.0.1', 1, 1, 1, new VarBindList(...[
+        $pdu = new TrapPDU('1.3.6.1.2.1.1.3.0', '127.0.0.1', 1, 1, 1, new VarBindList(...[
             new VarBind(new Oid('1.3.6.1.2.1.1.3.0'), new TimeTicks(185993413)),
         ]));
-        $pdu = new TrapPDU($pdu_body);
         $bin = $pdu->toBinary();
-
         $hex = bin2hex($bin);
         $this->assertEquals(self::example, $hex);
     }
@@ -35,12 +37,139 @@ class TrapPDUTest extends TestCase
      */
     public function testDecoded()
     {
-        $decoded = PDUDecoder::fromBinary(hex2bin(self::example));
-        $pdu_body = new TrapPDUBody('1.3.6.1.2.1.1.3.0', '127.0.0.1', 1, 1, 1, new VarBindList(...[
+        $decoded = TrapPDU::fromBinary(hex2bin(self::example));
+        $pdu = new TrapPDU('1.3.6.1.2.1.1.3.0', '127.0.0.1', 1, 1, 1, new VarBindList(...[
             new VarBind(new Oid('1.3.6.1.2.1.1.3.0'), new TimeTicks(185993413)),
         ]));
-        $pdu = new TrapPDU($pdu_body);
         $this->assertTrue($decoded->equals($pdu));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testNonContextFails()
+    {
+        $this->expectException(DecodeError::class);
+        TrapPDU::fromBinary(hex2bin('0500'));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadSequenceCountFails()
+    {
+        $this->expectException(DecodeError::class);
+        TrapPDU::fromASN1(
+            new ImplicitlyTaggedType(
+                TrapPDU::TAG,
+                new Sequence(new Integer(1))
+            )
+        );
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadEnterpriseElementFails()
+    {
+        $this->expectException(DecodeError::class);
+        TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
+            new Integer(1),
+            new OctetString('asd'),
+            new Integer(1),
+            new Integer(1),
+            new Integer(1),
+            new Sequence())));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadAgentAddressElementFails()
+    {
+        $this->expectException(DecodeError::class);
+        TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
+            new OctetString('asd'),
+            new Integer(1),
+            new Integer(1),
+            new Integer(1),
+            new Integer(1),
+            new Sequence())));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadGenericTrapElementFails()
+    {
+        $this->expectException(DecodeError::class);
+        TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
+            new OctetString('asd'),
+            new OctetString('asd'),
+            new OctetString('asd'),
+            new Integer(1),
+            new Integer(1),
+            new Sequence())));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadSpecificTrapElementFails()
+    {
+        $this->expectException(DecodeError::class);
+        TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
+            new OctetString('asd'),
+            new OctetString('asd'),
+            new Integer(1),
+            new OctetString('asd'),
+            new Integer(1),
+            new Sequence())));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadTimeStampElementFails()
+    {
+        $this->expectException(DecodeError::class);
+        TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
+            new OctetString('asd'),
+            new OctetString('asd'),
+            new Integer(1),
+            new Integer(1),
+            new OctetString('asd'),
+            new Sequence())));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testBadVarBindListElementFails()
+    {
+        $this->expectException(DecodeError::class);
+        TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
+            new OctetString('asd'),
+            new OctetString('asd'),
+            new Integer(1),
+            new Integer(1),
+            new Integer(1),
+            new OctetString('asd'))));
+    }
+
+    public function testGetters()
+    {
+        $enterprise = '1.3.6.1.2.1.1.3.0';
+        $agent = '127.0.0.1';
+        $var_bind = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue());
+        $var_bind_list = new VarBindList($var_bind);
+        $pdu = new TrapPDU($enterprise, $agent, 1, 2, 3, $var_bind_list);
+        $this->assertEquals($enterprise, $pdu->getEnterprise());
+        $this->assertEquals($agent, $pdu->getAgentAddress());
+        $this->assertEquals(1, $pdu->getGenericTrap());
+        $this->assertEquals(2, $pdu->getSpecificTrap());
+        $this->assertEquals(3, $pdu->getTimestamp());
+        $this->assertTrue($var_bind_list->equals($pdu->getVariableBindings()));
     }
 
 }

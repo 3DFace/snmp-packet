@@ -9,7 +9,6 @@ use ASN1\Type\Primitive\OctetString;
 use dface\SnmpPacket\DataType\NullValue;
 use dface\SnmpPacket\DataType\Oid;
 use dface\SnmpPacket\Exception\DecodeError;
-use dface\SnmpPacket\PDU\BasicPDUBody;
 use dface\SnmpPacket\PDU\GetRequestPDU;
 use dface\SnmpPacket\VarBind\VarBind;
 use dface\SnmpPacket\VarBind\VarBindList;
@@ -22,10 +21,9 @@ class MessageV1Test extends TestCase
 
     public function testEncoded()
     {
-        $pdu_body = new BasicPDUBody(1, 0, 0, new VarBindList(...[
+        $pdu = new GetRequestPDU(1, 0, 0, new VarBindList(...[
             new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
         ]));
-        $pdu = new GetRequestPDU($pdu_body);
         $testMessage = new MessageV1(0, 'private', $pdu);
         $bin = $testMessage->toBinary();
 
@@ -40,10 +38,9 @@ class MessageV1Test extends TestCase
         $bin = hex2bin(self::get_request_example);
         $decodedMessage = MessageV1::fromBinary($bin);
 
-        $pdu_body = new BasicPDUBody(1, 0, 0, new VarBindList(...[
+        $pdu = new GetRequestPDU(1, 0, 0, new VarBindList(...[
             new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
         ]));
-        $pdu = new GetRequestPDU($pdu_body);
         $testMessage = new MessageV1(0, 'private', $pdu);
 
         $this->assertTrue($testMessage->equals($decodedMessage));
@@ -80,12 +77,12 @@ class MessageV1Test extends TestCase
             new Integer(1)));
     }
 
-    public function testGetters(){
+    public function testGetters()
+    {
 
-        $pdu_body = new BasicPDUBody(1, 0, 0, new VarBindList(...[
+        $pdu = new GetRequestPDU(1, 0, 0, new VarBindList(...[
             new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
         ]));
-        $pdu = new GetRequestPDU($pdu_body);
 
         $msg = new MessageV1(0, 'public', $pdu);
         $this->assertEquals(0, $msg->getVersion());
