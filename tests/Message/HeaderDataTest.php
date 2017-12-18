@@ -65,7 +65,8 @@ class HeaderDataTest extends TestCase
             new Integer(1)));
     }
 
-    public function testGetters(){
+    public function testGetters()
+    {
         $h = new HeaderData(1, 2, 3, 4);
         $this->assertEquals(1, $h->getId());
         $this->assertEquals(2, $h->getMaxSize());

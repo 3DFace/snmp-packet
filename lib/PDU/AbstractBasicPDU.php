@@ -4,7 +4,6 @@
 namespace dface\SnmpPacket\PDU;
 
 
-use ASN1\Component\Identifier;
 use ASN1\Element;
 use ASN1\Exception\DecodeException;
 use ASN1\Type\Constructed\Sequence;

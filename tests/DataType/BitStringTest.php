@@ -67,7 +67,8 @@ class BitStringTest extends TestCase
         BitString::fromASN1((new Integer(0))->asUnspecified());
     }
 
-    public function testGetters(){
+    public function testGetters()
+    {
         $bits = hex2bin('a0a0');
         $data = new BitString($bits, 3);
         $this->assertEquals($bits, $data->getValue());

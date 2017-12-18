@@ -26,72 +26,89 @@ use PHPUnit\Framework\TestCase;
 class DataTypeVisitorTest extends TestCase
 {
 
-    private function ensureVisited(DataType $original){
+    private function ensureVisited(DataType $original)
+    {
         $visited = $original->acceptVisitor(new TestDataTypeVisitor());
         $this->assertTrue($original->equals($visited));
     }
 
-    public function testInteger32Visited(){
+    public function testInteger32Visited()
+    {
         $this->ensureVisited(new Integer32(123));
     }
 
-    public function testOctetStringVisited(){
+    public function testOctetStringVisited()
+    {
         $this->ensureVisited(new OctetString('asd'));
     }
 
-    public function testOidVisited(){
+    public function testOidVisited()
+    {
         $this->ensureVisited(new Oid('1.1'));
     }
 
-    public function testBitStringVisited(){
+    public function testBitStringVisited()
+    {
         $this->ensureVisited(new BitString('asd', 3));
     }
 
-    public function testNullVisited(){
+    public function testNullVisited()
+    {
         $this->ensureVisited(new NullValue());
     }
 
-    public function testIpAddressVisited(){
+    public function testIpAddressVisited()
+    {
         $this->ensureVisited(new IpAddress('10.10.10.10'));
     }
 
-    public function testNsapAddressVisited(){
+    public function testNsapAddressVisited()
+    {
         $this->ensureVisited(new NsapAddress('wat?'));
     }
 
-    public function testCounter32Visited(){
+    public function testCounter32Visited()
+    {
         $this->ensureVisited(new Counter32(123));
     }
 
-    public function testCounter64Visited(){
+    public function testCounter64Visited()
+    {
         $this->ensureVisited(new Counter64(123));
     }
 
-    public function testGauge32Visited(){
+    public function testGauge32Visited()
+    {
         $this->ensureVisited(new Gauge32(123));
     }
 
-    public function testUInteger32Visited(){
+    public function testUInteger32Visited()
+    {
         $this->ensureVisited(new UInteger32(123));
     }
 
-    public function testTimeTicksVisited(){
+    public function testTimeTicksVisited()
+    {
         $this->ensureVisited(new TimeTicks(123));
     }
 
-    public function testOpaqueVisited(){
+    public function testOpaqueVisited()
+    {
         $this->ensureVisited(new Opaque('asd'));
     }
 
-    public function testNoSuchObjectVisited(){
+    public function testNoSuchObjectVisited()
+    {
         $this->ensureVisited(new NoSuchObject());
     }
 
-    public function testNoSuchInstanceVisited(){
+    public function testNoSuchInstanceVisited()
+    {
         $this->ensureVisited(new NoSuchInstance());
     }
 
-    public function testEndOfMibViewVisited(){
+    public function testEndOfMibViewVisited()
+    {
         $this->ensureVisited(new EndOfMibView());
     }
 

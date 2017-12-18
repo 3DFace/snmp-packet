@@ -58,7 +58,8 @@ class OctetStringTest extends TestCase
         OctetString::fromBinary(hex2bin('81'));
     }
 
-    public function testGetValue(){
+    public function testGetValue()
+    {
         $i = new OctetString('asd');
         $this->assertEquals('asd', $i->getValue());
     }

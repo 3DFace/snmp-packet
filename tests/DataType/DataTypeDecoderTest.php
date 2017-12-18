@@ -29,7 +29,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testIpAddressDetected(){
+    public function testIpAddressDetected()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('40040a007260'));
         $this->assertInstanceOf(IpAddress::class, $x);
     }
@@ -37,7 +38,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testNsapAddressDetected(){
+    public function testNsapAddressDetected()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('45023131'));
         $this->assertInstanceOf(NsapAddress::class, $x);
     }
@@ -45,7 +47,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testCounter32Decoded(){
+    public function testCounter32Decoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('410101'));
         $this->assertInstanceOf(Counter32::class, $x);
     }
@@ -53,7 +56,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testGauge32Decoded(){
+    public function testGauge32Decoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('420101'));
         $this->assertInstanceOf(Gauge32::class, $x);
     }
@@ -61,7 +65,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testTimeTicksDecoded(){
+    public function testTimeTicksDecoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('430101'));
         $this->assertInstanceOf(TimeTicks::class, $x);
     }
@@ -70,7 +75,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testOpaqueDecoded(){
+    public function testOpaqueDecoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('440131'));
         $this->assertInstanceOf(Opaque::class, $x);
     }
@@ -78,7 +84,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testCounter64Decoded(){
+    public function testCounter64Decoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('460101'));
         $this->assertInstanceOf(Counter64::class, $x);
     }
@@ -86,7 +93,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testUInteger32Decoded(){
+    public function testUInteger32Decoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('470101'));
         $this->assertInstanceOf(UInteger32::class, $x);
     }
@@ -94,7 +102,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testUnknownAppTagFailed(){
+    public function testUnknownAppTagFailed()
+    {
         $this->expectException(DecodeError::class);
         DataTypeDecoder::fromBinary(hex2bin('490101'));
     }
@@ -102,7 +111,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testIntegerDecoded(){
+    public function testIntegerDecoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('020101'));
         $this->assertInstanceOf(Integer32::class, $x);
     }
@@ -110,7 +120,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testOctetStringDecoded(){
+    public function testOctetStringDecoded()
+    {
         $ip = DataTypeDecoder::fromBinary(hex2bin('040131'));
         $this->assertInstanceOf(OctetString::class, $ip);
     }
@@ -118,7 +129,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testBitStringDecoded(){
+    public function testBitStringDecoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('030303a0a0'));
         $this->assertInstanceOf(BitString::class, $x);
     }
@@ -126,7 +138,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testOidDecoded(){
+    public function testOidDecoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('06062b0601020104'));
         $this->assertInstanceOf(Oid::class, $x);
     }
@@ -134,7 +147,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testNullDecoded(){
+    public function testNullDecoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('0500'));
         $this->assertInstanceOf(NullValue::class, $x);
     }
@@ -142,7 +156,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testUnsupportedUniversalFails(){
+    public function testUnsupportedUniversalFails()
+    {
         $this->expectException(DecodeError::class);
         DataTypeDecoder::fromBinary(hex2bin('0900'));
     }
@@ -150,7 +165,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testNoSuchObjectDecoded(){
+    public function testNoSuchObjectDecoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('8000'));
         $this->assertInstanceOf(NoSuchObject::class, $x);
     }
@@ -158,7 +174,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testNoSuchInstanceDecoded(){
+    public function testNoSuchInstanceDecoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('8100'));
         $this->assertInstanceOf(NoSuchInstance::class, $x);
     }
@@ -166,7 +183,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testEndOfMibViewDecoded(){
+    public function testEndOfMibViewDecoded()
+    {
         $x = DataTypeDecoder::fromBinary(hex2bin('8200'));
         $this->assertInstanceOf(EndOfMibView::class, $x);
     }
@@ -174,7 +192,8 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testUnsupportedContextFails(){
+    public function testUnsupportedContextFails()
+    {
         $this->expectException(DecodeError::class);
         DataTypeDecoder::fromBinary(hex2bin('8300'));
     }
@@ -182,9 +201,20 @@ class DataTypeDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testBadASN1Fails(){
+    public function testBadASN1Fails()
+    {
         $this->expectException(DecodeError::class);
         DataTypeDecoder::fromBinary(hex2bin('00'));
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testASN1PrivateFails()
+    {
+        $this->expectException(DecodeError::class);
+        // for now it fails cause asn1 lib does not implement `private` class support
+        DataTypeDecoder::fromBinary(hex2bin('c000'));
     }
 
 }

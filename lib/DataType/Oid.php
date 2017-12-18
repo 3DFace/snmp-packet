@@ -19,8 +19,8 @@ class Oid implements DataType
     public function __construct(string $value)
     {
         /** @noinspection NotOptimalRegularExpressionsInspection */
-        if(!preg_match('/^([1-9][0-9]{0,3}|0)(\.([1-9][0-9]{0,3}|0))+$/', $value)){
-            throw new \InvalidArgumentException('Bad oid: '.$value);
+        if (!preg_match('/^([1-9][0-9]{0,3}|0)(\.([1-9][0-9]{0,3}|0))+$/', $value)) {
+            throw new \InvalidArgumentException('Bad oid: ' . $value);
         }
         $this->value = $value;
     }

@@ -14,7 +14,8 @@ class AbstractNoValueTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testNonContextFails(){
+    public function testNonContextFails()
+    {
         $this->expectException(DecodeError::class);
         NoSuchObject::fromBinary(hex2bin('0500'));
     }
@@ -22,7 +23,8 @@ class AbstractNoValueTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testInvalidTagFails(){
+    public function testInvalidTagFails()
+    {
         $this->expectException(DecodeError::class);
         NoSuchObject::fromBinary(hex2bin('8100'));
     }
@@ -30,7 +32,8 @@ class AbstractNoValueTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testInvalidASN1Fails(){
+    public function testInvalidASN1Fails()
+    {
         $this->expectException(DecodeError::class);
         NoSuchObject::fromBinary(hex2bin('81'));
     }
@@ -38,7 +41,8 @@ class AbstractNoValueTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testUnexpectedASN1Fails(){
+    public function testUnexpectedASN1Fails()
+    {
         $this->expectException(DecodeError::class);
         NoSuchObject::fromASN1((new Integer(1))->asUnspecified());
     }

@@ -72,7 +72,8 @@ class Integer32Test extends TestCase
         new Integer32(Integer32::MAX + 1);
     }
 
-    public function testGetValue(){
+    public function testGetValue()
+    {
         $i = new Integer32(123);
         $this->assertEquals(123, $i->getValue());
     }

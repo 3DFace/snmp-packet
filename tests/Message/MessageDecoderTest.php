@@ -15,7 +15,8 @@ class MessageDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testMessageV1Decoded(){
+    public function testMessageV1Decoded()
+    {
         $x = MessageDecoder::fromBinary(hex2bin('302c020100040770726976617465a01e02010102010002010030133011060d2b0601040194780102070302000500'));
         $this->assertInstanceOf(MessageV1::class, $x);
     }
@@ -23,7 +24,8 @@ class MessageDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testMessageV3Decoded(){
+    public function testMessageV3Decoded()
+    {
         $x = MessageDecoder::fromBinary(hex2bin('303e020103301102042c22074a020300ffe30401040201030410300e0400020100020100040004000400301404000400a00e0204272900d20201000201003000'));
         $this->assertInstanceOf(MessageV3::class, $x);
     }
@@ -31,7 +33,8 @@ class MessageDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testBadVersionFails(){
+    public function testBadVersionFails()
+    {
         $this->expectException(DecodeError::class);
         MessageDecoder::fromBinary(hex2bin('302c020109040770726976617465a01e02010102010002010030133011060d2b0601040194780102070302000500'));
     }
@@ -39,7 +42,8 @@ class MessageDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testBadASN1Fails(){
+    public function testBadASN1Fails()
+    {
         $this->expectException(DecodeError::class);
         MessageDecoder::fromBinary(hex2bin('00'));
     }
@@ -47,7 +51,8 @@ class MessageDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testNonSequenceFails(){
+    public function testNonSequenceFails()
+    {
         $this->expectException(DecodeError::class);
         MessageDecoder::fromBinary(hex2bin('0500'));
     }
@@ -55,7 +60,8 @@ class MessageDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testNoVersionAtBeginningFails(){
+    public function testNoVersionAtBeginningFails()
+    {
         $this->expectException(DecodeError::class);
         MessageDecoder::fromASN1(new Sequence(
             new OctetString('asd'),

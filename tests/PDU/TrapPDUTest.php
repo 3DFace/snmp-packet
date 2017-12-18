@@ -11,7 +11,6 @@ use dface\SnmpPacket\DataType\NullValue;
 use dface\SnmpPacket\DataType\Oid;
 use dface\SnmpPacket\DataType\TimeTicks;
 use dface\SnmpPacket\Exception\DecodeError;
-use dface\SnmpPacket\PDU\PDUDecoder;
 use dface\SnmpPacket\PDU\TrapPDU;
 use dface\SnmpPacket\VarBind\VarBind;
 use dface\SnmpPacket\VarBind\VarBindList;

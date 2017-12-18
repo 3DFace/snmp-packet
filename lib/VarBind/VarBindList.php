@@ -3,7 +3,6 @@
 
 namespace dface\SnmpPacket\VarBind;
 
-use ASN1\Element;
 use ASN1\Exception\DecodeException;
 use ASN1\Type\Constructed\Sequence;
 use ASN1\Type\UnspecifiedType;

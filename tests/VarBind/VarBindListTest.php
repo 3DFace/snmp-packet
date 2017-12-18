@@ -60,7 +60,8 @@ class VarBindListTest extends TestCase
         $this->assertTrue($var_bind->equals($var_bind_list->getList()[0]));
     }
 
-    public function testEquals(){
+    public function testEquals()
+    {
         $var_bind = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue());
         $list1 = new VarBindList($var_bind);
         $list2 = new VarBindList($var_bind);

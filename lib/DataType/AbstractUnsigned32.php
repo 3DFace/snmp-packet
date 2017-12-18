@@ -25,6 +25,7 @@ abstract class AbstractUnsigned32 implements DataType
     public function __construct($value)
     {
         if (gmp_cmp($value, 0) < 0 || gmp_cmp($value, self::MAX) > 0) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new \InvalidArgumentException('Counter32 must be in range [0...4294967295]');
         }
         $this->value = $value;

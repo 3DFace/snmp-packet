@@ -22,7 +22,7 @@ class Integer32 implements DataType
     public function __construct(int $value)
     {
         if ($value < self::MIN || $value > self::MAX) {
-            throw new \InvalidArgumentException('Integer32 mus be in range ['.self::MIN.'...'.self::MAX.']');
+            throw new \InvalidArgumentException('Integer32 mus be in range [' . self::MIN . '...' . self::MAX . ']');
         }
         $this->value = $value;
     }

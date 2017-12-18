@@ -39,14 +39,14 @@ abstract class MessageDecoder
         } catch (\UnexpectedValueException|\OutOfBoundsException $e) {
             throw new DecodeError('Message must be an ASN1 sequence with version number in the beginning');
         }
-        switch ($version){
+        switch ($version) {
             case 0:
             case 1:
                 return MessageV1::fromASN1($sequence);
             case 3:
                 return MessageV3::fromASN1($sequence);
             default:
-                throw new DecodeError('Unsupported message version: '.$version);
+                throw new DecodeError('Unsupported message version: ' . $version);
         }
     }
 
