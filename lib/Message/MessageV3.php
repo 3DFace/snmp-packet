@@ -96,7 +96,7 @@ class MessageV3 implements Message
             $seq = UnspecifiedType::fromDER($binary)->asSequence();
             return self::fromASN1($seq);
         } catch (DecodeException | \UnexpectedValueException $e) {
-            throw new DecodeError('Cant decode snmp message: ' . $e->getMessage(), 1, $e);
+            throw new DecodeError('Cant decode snmp message: ' . $e->getMessage(), 0, $e);
         }
     }
 

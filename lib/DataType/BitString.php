@@ -3,7 +3,6 @@
 
 namespace dface\SnmpPacket\DataType;
 
-use ASN1\Component\Identifier;
 use ASN1\Element;
 use ASN1\Exception\DecodeException;
 use ASN1\Type\UnspecifiedType;
@@ -40,7 +39,9 @@ class BitString implements DataType
 
     public function equals($val): bool
     {
-        return $val instanceof self && $val->value === $this->value;
+        return $val instanceof self
+            && $val->value === $this->value
+            && $val->unused_bits === $this->unused_bits;
     }
 
     public function toASN1(): Element
@@ -62,12 +63,7 @@ class BitString implements DataType
     public static function fromBinary(string $binary): self
     {
         try {
-            $bit_string = Element::fromDER($binary)->asUnspecified();
-            $class = $bit_string->typeClass();
-            $tag = $bit_string->tag();
-            if ($class !== Identifier::CLASS_UNIVERSAL || $tag !== Element::TYPE_BIT_STRING) {
-                throw new DecodeError(__CLASS__ . ' expects asn1 universal BIT_STRING');
-            }
+            $bit_string = UnspecifiedType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }

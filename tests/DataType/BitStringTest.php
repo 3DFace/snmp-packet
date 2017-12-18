@@ -5,6 +5,7 @@ namespace DataType;
 
 use ASN1\Type\Primitive\Integer;
 use dface\SnmpPacket\DataType\BitString;
+use dface\SnmpPacket\DataType\Counter32;
 use dface\SnmpPacket\Exception\DecodeError;
 use PHPUnit\Framework\TestCase;
 
@@ -37,6 +38,7 @@ class BitStringTest extends TestCase
     public function testNonUniversalBinFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         BitString::fromBinary(hex2bin('410101'));
     }
 
@@ -46,6 +48,7 @@ class BitStringTest extends TestCase
     public function testBadASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         BitString::fromBinary(hex2bin('05'));
     }
 
@@ -55,6 +58,7 @@ class BitStringTest extends TestCase
     public function testNotBitStringBinFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         BitString::fromBinary(hex2bin('0500'));
     }
 
@@ -64,6 +68,7 @@ class BitStringTest extends TestCase
     public function testNotBitStringAsn1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         BitString::fromASN1((new Integer(0))->asUnspecified());
     }
 
@@ -73,6 +78,22 @@ class BitStringTest extends TestCase
         $data = new BitString($bits, 3);
         $this->assertEquals($bits, $data->getValue());
         $this->assertEquals(3, $data->getUnusedBits());
+    }
+
+    public function testEquals()
+    {
+        $x1 = new BitString('asd', 0);
+        $x2 = new BitString('asd', 0);
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $x1 = new BitString('asd', 0);
+        $this->assertFalse($x1->equals(new BitString('asd', 1)));
+        $this->assertFalse($x1->equals(new BitString('zxc', 0)));
+        $this->assertFalse($x1->equals(new BitString('zxc', 1)));
+        $this->assertFalse($x1->equals(new Counter32(321)));
     }
 
 }

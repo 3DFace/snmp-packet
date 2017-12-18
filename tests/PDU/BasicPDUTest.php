@@ -48,6 +48,7 @@ class BasicPDUTest extends TestCase
     public function testNonContextFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetRequestPDU::fromBinary(hex2bin('0500'));
     }
 
@@ -57,6 +58,7 @@ class BasicPDUTest extends TestCase
     public function testBadSequenceCountFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetRequestPDU::fromASN1(
             new ImplicitlyTaggedType(
                 GetRequestPDU::TAG,
@@ -71,6 +73,7 @@ class BasicPDUTest extends TestCase
     public function testBadReqIdElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetRequestPDU::fromASN1(new ImplicitlyTaggedType(GetRequestPDU::TAG, new Sequence(
             new OctetString('asd'),
             new Integer(1),
@@ -84,6 +87,7 @@ class BasicPDUTest extends TestCase
     public function testBadErrStatusElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetRequestPDU::fromASN1(new ImplicitlyTaggedType(GetRequestPDU::TAG, new Sequence(
             new Integer(1),
             new OctetString('asd'),
@@ -97,6 +101,7 @@ class BasicPDUTest extends TestCase
     public function testBadErrIndexElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetRequestPDU::fromASN1(new ImplicitlyTaggedType(GetRequestPDU::TAG, new Sequence(
             new Integer(1),
             new Integer(1),
@@ -110,6 +115,7 @@ class BasicPDUTest extends TestCase
     public function testBadVarBindListElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetRequestPDU::fromASN1(new ImplicitlyTaggedType(GetRequestPDU::TAG, new Sequence(
             new Integer(1),
             new Integer(1),
@@ -136,6 +142,7 @@ class BasicPDUTest extends TestCase
         $this->assertEquals(InformRequestPDU::TAG, InformRequestPDU::getTag());
         $this->assertEquals(SetRequestPDU::TAG, SetRequestPDU::getTag());
         $this->assertEquals(TrapV2PDU::TAG, TrapV2PDU::getTag());
+        $this->assertEquals(ReportPDU::TAG, ReportPDU::getTag());
     }
 
 }

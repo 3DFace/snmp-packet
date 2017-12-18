@@ -3,7 +3,6 @@
 
 namespace dface\SnmpPacket\DataType;
 
-use ASN1\Component\Identifier;
 use ASN1\Element;
 use ASN1\Exception\DecodeException;
 use ASN1\Type\Primitive\ObjectIdentifier;
@@ -59,12 +58,7 @@ class Oid implements DataType
     public static function fromBinary(string $binary): self
     {
         try {
-            $str = Element::fromDER($binary)->asUnspecified();
-            $class = $str->typeClass();
-            $tag = $str->tag();
-            if ($class !== Identifier::CLASS_UNIVERSAL || $tag !== Element::TYPE_OBJECT_IDENTIFIER) {
-                throw new DecodeError(__CLASS__ . ' expects asn1 universal object identifier');
-            }
+            $str = UnspecifiedType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }
@@ -85,6 +79,5 @@ class Oid implements DataType
         }
         return new self($value);
     }
-
 
 }

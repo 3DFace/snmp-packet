@@ -105,6 +105,7 @@ class DataTypeDecoderTest extends TestCase
     public function testUnknownAppTagFailed()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         DataTypeDecoder::fromBinary(hex2bin('490101'));
     }
 
@@ -159,6 +160,7 @@ class DataTypeDecoderTest extends TestCase
     public function testUnsupportedUniversalFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         DataTypeDecoder::fromBinary(hex2bin('0900'));
     }
 
@@ -195,6 +197,7 @@ class DataTypeDecoderTest extends TestCase
     public function testUnsupportedContextFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         DataTypeDecoder::fromBinary(hex2bin('8300'));
     }
 
@@ -204,6 +207,7 @@ class DataTypeDecoderTest extends TestCase
     public function testBadASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         DataTypeDecoder::fromBinary(hex2bin('00'));
     }
 
@@ -213,6 +217,7 @@ class DataTypeDecoderTest extends TestCase
     public function testASN1PrivateFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         // for now it fails cause asn1 lib does not implement `private` class support
         DataTypeDecoder::fromBinary(hex2bin('c000'));
     }

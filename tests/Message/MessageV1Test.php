@@ -25,9 +25,13 @@ class MessageV1Test extends TestCase
             new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
         ]));
         $testMessage = new MessageV1(0, 'private', $pdu);
-        $bin = $testMessage->toBinary();
 
-        $this->assertEquals(self::get_request_example, bin2hex($bin));
+        $this->assertEquals(self::get_request_example, bin2hex($testMessage->toBinary()));
+        $this->assertEquals(new Sequence(
+            new Integer(0),
+            new OctetString('private'),
+            $pdu->toASN1()
+        ), $testMessage->toASN1());
     }
 
     /**
@@ -52,6 +56,7 @@ class MessageV1Test extends TestCase
     public function testNonSequenceFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageV1::fromBinary(hex2bin('0500'));
     }
 
@@ -61,6 +66,7 @@ class MessageV1Test extends TestCase
     public function testBadSequenceCountFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageV1::fromASN1(new Sequence(
             new Integer(1)));
     }
@@ -71,6 +77,7 @@ class MessageV1Test extends TestCase
     public function testBadSequenceElementsFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageV1::fromASN1(new Sequence(
             new OctetString('asd'),
             new Integer(1),
@@ -88,6 +95,32 @@ class MessageV1Test extends TestCase
         $this->assertEquals(0, $msg->getVersion());
         $this->assertEquals('public', $msg->getCommunity());
         $this->assertTrue($pdu->equals($msg->getPdu()));
+    }
+
+    public function testEquals()
+    {
+        $pdu = new GetRequestPDU(1, 0, 0, new VarBindList(...[
+            new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
+        ]));
+        $x1 = new MessageV1(0, 'public', $pdu);
+        $x2 = new MessageV1(0, 'public', $pdu);
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $pdu1 = new GetRequestPDU(1, 0, 0, new VarBindList(...[
+            new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
+        ]));
+        $pdu2 = new GetRequestPDU(2, 0, 0, new VarBindList(...[
+            new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
+        ]));
+        $x1 = new MessageV1(0, 'public', $pdu1);
+        $this->assertFalse($x1->equals(new MessageV1(1, 'public', $pdu1)));
+        $this->assertFalse($x1->equals(new MessageV1(0, 'private', $pdu1)));
+        $this->assertFalse($x1->equals(new MessageV1(0, 'public', $pdu2)));
+        $this->assertFalse($x1->equals(new MessageV1(1, 'private', $pdu2)));
+        $this->assertFalse($x1->equals(new OctetString('asd')));
     }
 
 }

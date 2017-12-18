@@ -5,6 +5,7 @@ namespace DataType;
 
 use ASN1\Type\Primitive\OctetString;
 use dface\SnmpPacket\DataType\Integer32;
+use dface\SnmpPacket\DataType\TimeTicks;
 use dface\SnmpPacket\Exception\DecodeError;
 use PHPUnit\Framework\TestCase;
 
@@ -37,6 +38,7 @@ class Integer32Test extends TestCase
     public function testNonUniversalFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         Integer32::fromBinary(hex2bin('430101'));
     }
 
@@ -46,6 +48,7 @@ class Integer32Test extends TestCase
     public function testNonIntegerAsn1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         Integer32::fromASN1((new OctetString('asd'))->asUnspecified());
     }
 
@@ -55,6 +58,7 @@ class Integer32Test extends TestCase
     public function testInvalidASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         Integer32::fromBinary(hex2bin('81'));
     }
 
@@ -62,6 +66,7 @@ class Integer32Test extends TestCase
     {
         new Integer32(Integer32::MIN);
         $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionCode(0);
         new Integer32(Integer32::MIN - 1);
     }
 
@@ -69,6 +74,7 @@ class Integer32Test extends TestCase
     {
         new Integer32(Integer32::MAX);
         $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionCode(0);
         new Integer32(Integer32::MAX + 1);
     }
 
@@ -76,6 +82,21 @@ class Integer32Test extends TestCase
     {
         $i = new Integer32(123);
         $this->assertEquals(123, $i->getValue());
+    }
+
+    public function testEquals()
+    {
+        $x1 = new Integer32(123);
+        $x2 = new Integer32(123);
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $x1 = new Integer32(123);
+        $this->assertFalse($x1->equals(new Integer32(321)));
+        $this->assertFalse($x1->equals(new TimeTicks(123)));
+        $this->assertFalse($x1->equals(new TimeTicks(321)));
     }
 
 }

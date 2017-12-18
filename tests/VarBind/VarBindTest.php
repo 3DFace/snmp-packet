@@ -42,6 +42,7 @@ class VarBindTest extends TestCase
     public function testNonSequenceFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         VarBind::fromBinary(hex2bin('0500'));
     }
 
@@ -51,6 +52,7 @@ class VarBindTest extends TestCase
     public function testBadSequenceCountFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         VarBind::fromASN1(new Sequence(new Integer(1)));
     }
 
@@ -60,6 +62,7 @@ class VarBindTest extends TestCase
     public function testBadOidElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         VarBind::fromASN1(new Sequence(
             new OctetString('asd'),
             new Integer(1)));
@@ -71,6 +74,7 @@ class VarBindTest extends TestCase
     public function testBadValueElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         VarBind::fromASN1(new Sequence(
             new ObjectIdentifier('1.3.6.1.4.1.2680.1.2.7.3.2.0'),
             new Sequence()));
@@ -83,6 +87,28 @@ class VarBindTest extends TestCase
         $var_bind = new VarBind($oid, $tt);
         $this->assertTrue($oid->equals($var_bind->getOid()));
         $this->assertTrue($tt->equals($var_bind->getValue()));
+    }
+
+    public function testEquals()
+    {
+        $oid = new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0');
+        $tt = new TimeTicks(1);
+        $x1 = new VarBind($oid, $tt);
+        $x2 = new VarBind($oid, $tt);
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $oid1 = new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0');
+        $oid2 = new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.1');
+        $tt1 = new TimeTicks(1);
+        $tt2 = new TimeTicks(2);
+        $x1 = new VarBind($oid1, $tt1);
+
+        $this->assertFalse($x1->equals(new VarBind($oid2, $tt1)));
+        $this->assertFalse($x1->equals(new VarBind($oid1, $tt2)));
+        $this->assertFalse($x1->equals(new VarBind($oid2, $tt2)));
     }
 
 }

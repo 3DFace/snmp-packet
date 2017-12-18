@@ -5,6 +5,7 @@ namespace DataType;
 
 use ASN1\Type\UnspecifiedType;
 use dface\SnmpPacket\DataType\NsapAddress;
+use dface\SnmpPacket\DataType\OctetString;
 use dface\SnmpPacket\Exception\DecodeError;
 use PHPUnit\Framework\TestCase;
 
@@ -37,6 +38,7 @@ class NsapAddressTest extends TestCase
     public function testNonApplicationFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         NsapAddress::fromBinary(hex2bin('0500'));
     }
 
@@ -46,6 +48,7 @@ class NsapAddressTest extends TestCase
     public function testInvalidTagFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         NsapAddress::fromASN1(UnspecifiedType::fromDER(hex2bin('430101'))->asApplication());
     }
 
@@ -55,6 +58,7 @@ class NsapAddressTest extends TestCase
     public function testInvalidASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         NsapAddress::fromBinary(hex2bin('81'));
     }
 
@@ -62,6 +66,21 @@ class NsapAddressTest extends TestCase
     {
         $i = new NsapAddress('wat?');
         $this->assertEquals('wat?', $i->getValue());
+    }
+
+
+    public function testEquals()
+    {
+        $x1 = new NsapAddress('wat?');
+        $x2 = new NsapAddress('wat?');
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $x1 = new NsapAddress('wat?');
+        $this->assertFalse($x1->equals(new NsapAddress('wat!')));
+        $this->assertFalse($x1->equals(new OctetString('wat?')));
     }
 
 }

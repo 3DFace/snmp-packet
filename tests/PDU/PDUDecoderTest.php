@@ -96,6 +96,7 @@ class PDUDecoderTest extends TestCase
     public function testBadASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         PDUDecoder::fromBinary(hex2bin('00'));
     }
 
@@ -105,6 +106,7 @@ class PDUDecoderTest extends TestCase
     public function testBadTagFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         PDUDecoder::fromBinary(hex2bin('af1e02010102010002010030133011060d2b0601040194780102070302000500'));
     }
 

@@ -3,7 +3,6 @@
 
 namespace dface\SnmpPacket\DataType;
 
-use ASN1\Component\Identifier;
 use ASN1\Element;
 use ASN1\Exception\DecodeException;
 use ASN1\Type\Primitive\Integer;
@@ -21,7 +20,10 @@ class Integer32 implements DataType
 
     public function __construct(int $value)
     {
-        if ($value < self::MIN || $value > self::MAX) {
+        if ($value < self::MIN) {
+            throw new \InvalidArgumentException('Integer32 mus be in range [' . self::MIN . '...' . self::MAX . ']');
+        }
+        if ($value > self::MAX) {
             throw new \InvalidArgumentException('Integer32 mus be in range [' . self::MIN . '...' . self::MAX . ']');
         }
         $this->value = $value;
@@ -62,11 +64,6 @@ class Integer32 implements DataType
     {
         try {
             $int = Element::fromDER($binary)->asUnspecified();
-            $class = $int->typeClass();
-            $tag = $int->tag();
-            if ($class !== Identifier::CLASS_UNIVERSAL || $tag !== Element::TYPE_INTEGER) {
-                throw new DecodeError(__CLASS__ . ' expects asn1 universal integer');
-            }
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }

@@ -39,6 +39,7 @@ class HeaderDataTest extends TestCase
     public function testNonSequenceFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         HeaderData::fromBinary(hex2bin('0500'));
     }
 
@@ -48,6 +49,7 @@ class HeaderDataTest extends TestCase
     public function testBadSequenceCountFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         HeaderData::fromASN1(new Sequence(
             new Integer(1)));
     }
@@ -58,6 +60,7 @@ class HeaderDataTest extends TestCase
     public function testBadSequenceElementsFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         HeaderData::fromASN1(new Sequence(
             new OctetString('asd'),
             new Integer(1),
@@ -72,6 +75,24 @@ class HeaderDataTest extends TestCase
         $this->assertEquals(2, $h->getMaxSize());
         $this->assertEquals(3, $h->getFlags());
         $this->assertEquals(4, $h->getSecurityModel());
+    }
+
+    public function testEquals()
+    {
+        $x1 = new HeaderData(1, 2, 3, 4);
+        $x2 = new HeaderData(1, 2, 3, 4);
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $x1 = new HeaderData(1, 2, 3, 4);
+        $this->assertFalse($x1->equals(new HeaderData(2, 2, 3, 4)));
+        $this->assertFalse($x1->equals(new HeaderData(1, 3, 3, 4)));
+        $this->assertFalse($x1->equals(new HeaderData(1, 2, 4, 4)));
+        $this->assertFalse($x1->equals(new HeaderData(1, 2, 3, 5)));
+        $this->assertFalse($x1->equals(new HeaderData(5, 5, 5, 5)));
+        $this->assertFalse($x1->equals(new OctetString('asd')));
     }
 
 }

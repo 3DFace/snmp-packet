@@ -29,9 +29,15 @@ class MessageV3Test extends TestCase
         $testMessage = new MessageV3(3, $header,
             hex2bin('3030040d80000103037072cf48b4f8000002016802030eab54040762696c6c696e67040cfc28d803bd8fc625cb3f93340400'),
             $scoped_pdu);
-        $bin = $testMessage->toBinary();
 
-        $this->assertEquals(self::get_request_example, bin2hex($bin));
+        $this->assertEquals(self::get_request_example, bin2hex($testMessage->toBinary()));
+
+        $this->assertEquals(new Sequence(
+            new Integer(3),
+            $header->toASN1(),
+            new OctetString(hex2bin('3030040d80000103037072cf48b4f8000002016802030eab54040762696c6c696e67040cfc28d803bd8fc625cb3f93340400')),
+            $scoped_pdu->toASN1()
+        ), $testMessage->toASN1());
     }
 
     /**
@@ -60,6 +66,7 @@ class MessageV3Test extends TestCase
     public function testNonSequenceFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageV3::fromBinary(hex2bin('0500'));
     }
 
@@ -69,6 +76,7 @@ class MessageV3Test extends TestCase
     public function testBadSequenceCountFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageV3::fromASN1(new Sequence(
             new Integer(1)));
     }
@@ -79,6 +87,7 @@ class MessageV3Test extends TestCase
     public function testBadSequenceElementsFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageV3::fromASN1(new Sequence(
             new OctetString('asd'),
             new Integer(1),
@@ -101,6 +110,41 @@ class MessageV3Test extends TestCase
         $this->assertTrue($headers->equals($msg->getGlobalData()));
         $this->assertEquals('asd', $msg->getSecurityParameters());
         $this->assertTrue($scoped_pdu->equals($msg->getData()));
+    }
+
+
+    public function testEquals()
+    {
+        $pdu = new GetRequestPDU(1, 0, 0, new VarBindList(...[
+            new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
+        ]));
+        $scoped_pdu = new ScopedPDU('1', '2', $pdu);
+        $headers = new HeaderData(1, 1, 1, 1);
+
+        $x1 = new MessageV3(3, $headers, 'asd', $scoped_pdu);
+        $x2 = new MessageV3(3, $headers, 'asd', $scoped_pdu);
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $pdu = new GetRequestPDU(1, 0, 0, new VarBindList(...[
+            new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue()),
+        ]));
+        $scoped_pdu1 = new ScopedPDU('1', '2', $pdu);
+        $scoped_pdu2 = new ScopedPDU('2', '3', $pdu);
+        $headers1 = new HeaderData(1, 1, 1, 1);
+        $headers2 = new HeaderData(2, 2, 2, 2);
+
+        $x1 = new MessageV3(3, $headers1, 'asd', $scoped_pdu1);
+
+        $this->assertFalse($x1->equals(new MessageV3(2, $headers1, 'asd', $scoped_pdu1)));
+        $this->assertFalse($x1->equals(new MessageV3(3, $headers2, 'asd', $scoped_pdu1)));
+        $this->assertFalse($x1->equals(new MessageV3(3, $headers1, 'zxc', $scoped_pdu1)));
+        $this->assertFalse($x1->equals(new MessageV3(3, $headers1, 'asd', $scoped_pdu2)));
+        $this->assertFalse($x1->equals(new MessageV3(2, $headers2, 'zxc', $scoped_pdu2)));
+
+        $this->assertFalse($x1->equals(new OctetString('asd')));
     }
 
 }

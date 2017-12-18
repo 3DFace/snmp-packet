@@ -49,6 +49,7 @@ class TrapPDUTest extends TestCase
     public function testNonContextFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         TrapPDU::fromBinary(hex2bin('0500'));
     }
 
@@ -58,6 +59,7 @@ class TrapPDUTest extends TestCase
     public function testBadSequenceCountFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         TrapPDU::fromASN1(
             new ImplicitlyTaggedType(
                 TrapPDU::TAG,
@@ -72,6 +74,7 @@ class TrapPDUTest extends TestCase
     public function testBadEnterpriseElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
             new Integer(1),
             new OctetString('asd'),
@@ -87,6 +90,7 @@ class TrapPDUTest extends TestCase
     public function testBadAgentAddressElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
             new OctetString('asd'),
             new Integer(1),
@@ -102,6 +106,7 @@ class TrapPDUTest extends TestCase
     public function testBadGenericTrapElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
             new OctetString('asd'),
             new OctetString('asd'),
@@ -117,6 +122,7 @@ class TrapPDUTest extends TestCase
     public function testBadSpecificTrapElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
             new OctetString('asd'),
             new OctetString('asd'),
@@ -132,6 +138,7 @@ class TrapPDUTest extends TestCase
     public function testBadTimeStampElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
             new OctetString('asd'),
             new OctetString('asd'),
@@ -147,6 +154,7 @@ class TrapPDUTest extends TestCase
     public function testBadVarBindListElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         TrapPDU::fromASN1(new ImplicitlyTaggedType(TrapPDU::TAG, new Sequence(
             new OctetString('asd'),
             new OctetString('asd'),
@@ -169,6 +177,38 @@ class TrapPDUTest extends TestCase
         $this->assertEquals(2, $pdu->getSpecificTrap());
         $this->assertEquals(3, $pdu->getTimestamp());
         $this->assertTrue($var_bind_list->equals($pdu->getVariableBindings()));
+    }
+
+    public function testEquals()
+    {
+        $enterprise = '1.3.6.1.2.1.1.3.0';
+        $agent = '127.0.0.1';
+        $var_bind = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue());
+        $var_bind_list = new VarBindList($var_bind);
+        $x1 = new TrapPDU($enterprise, $agent, 1, 2, 3, $var_bind_list);
+        $x2 = new TrapPDU($enterprise, $agent, 1, 2, 3, $var_bind_list);
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $enterprise1 = '1.3.6.1.2.1.1.3.0';
+        $enterprise2 = '1.3.6.1.2.1.1.3.1';
+        $agent1 = '127.0.0.1';
+        $agent2 = '10.10.10.10';
+        $var_bind1 = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue());
+        $var_bind_list1 = new VarBindList($var_bind1);
+        $var_bind2 = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.1'), new NullValue());
+        $var_bind_list2 = new VarBindList($var_bind2);
+        $x1 = new TrapPDU($enterprise1, $agent1, 1, 2, 3, $var_bind_list1);
+
+        $this->assertFalse($x1->equals(new TrapPDU($enterprise2, $agent1, 1, 2, 3, $var_bind_list1)));
+        $this->assertFalse($x1->equals(new TrapPDU($enterprise1, $agent2, 1, 2, 3, $var_bind_list1)));
+        $this->assertFalse($x1->equals(new TrapPDU($enterprise1, $agent1, 2, 2, 3, $var_bind_list1)));
+        $this->assertFalse($x1->equals(new TrapPDU($enterprise1, $agent1, 1, 3, 3, $var_bind_list1)));
+        $this->assertFalse($x1->equals(new TrapPDU($enterprise1, $agent1, 1, 2, 4, $var_bind_list1)));
+        $this->assertFalse($x1->equals(new TrapPDU($enterprise1, $agent1, 1, 2, 3, $var_bind_list2)));
+        $this->assertFalse($x1->equals(new TrapPDU($enterprise2, $agent2, 5, 5, 5, $var_bind_list2)));
     }
 
 }

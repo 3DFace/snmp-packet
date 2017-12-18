@@ -34,6 +34,7 @@ class ScopedPDUDataDecoderTest extends TestCase
     public function testBadASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         ScopedPDUDataDecoder::fromBinary(hex2bin('00'));
     }
 
@@ -43,6 +44,7 @@ class ScopedPDUDataDecoderTest extends TestCase
     public function testUnexpectedASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         ScopedPDUDataDecoder::fromBinary(hex2bin('0500'));
     }
 

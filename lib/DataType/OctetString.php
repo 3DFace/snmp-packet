@@ -3,7 +3,6 @@
 
 namespace dface\SnmpPacket\DataType;
 
-use ASN1\Component\Identifier;
 use ASN1\Element;
 use ASN1\Exception\DecodeException;
 use ASN1\Type\UnspecifiedType;
@@ -55,11 +54,6 @@ class OctetString implements DataType
     {
         try {
             $str = Element::fromDER($binary)->asUnspecified();
-            $class = $str->typeClass();
-            $tag = $str->tag();
-            if ($class !== Identifier::CLASS_UNIVERSAL || $tag !== Element::TYPE_OCTET_STRING) {
-                throw new DecodeError(__CLASS__ . ' expects asn1 universal octet string');
-            }
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }

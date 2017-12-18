@@ -3,7 +3,6 @@
 
 namespace dface\SnmpPacket\DataType;
 
-use ASN1\Component\Identifier;
 use ASN1\Element;
 use ASN1\Exception\DecodeException;
 use ASN1\Type\Primitive\NullType;
@@ -42,12 +41,7 @@ class NullValue implements DataType
     public static function fromBinary(string $binary): self
     {
         try {
-            $null = Element::fromDER($binary)->asUnspecified();
-            $class = $null->typeClass();
-            $tag = $null->tag();
-            if ($class !== Identifier::CLASS_UNIVERSAL || $tag !== Element::TYPE_NULL) {
-                throw new DecodeError(__CLASS__ . ' expects asn1 universal null');
-            }
+            $null = UnspecifiedType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }

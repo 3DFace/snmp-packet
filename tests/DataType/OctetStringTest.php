@@ -4,6 +4,7 @@
 namespace DataType;
 
 use ASN1\Type\Primitive\Integer;
+use dface\SnmpPacket\DataType\IpAddress;
 use dface\SnmpPacket\DataType\OctetString;
 use dface\SnmpPacket\Exception\DecodeError;
 use PHPUnit\Framework\TestCase;
@@ -37,6 +38,7 @@ class OctetStringTest extends TestCase
     public function testNonUniversalFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         OctetString::fromBinary(hex2bin('430101'));
     }
 
@@ -46,6 +48,7 @@ class OctetStringTest extends TestCase
     public function testNonOctetStringAsn1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         OctetString::fromASN1((new Integer(1))->asUnspecified());
     }
 
@@ -55,6 +58,7 @@ class OctetStringTest extends TestCase
     public function testInvalidASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         OctetString::fromBinary(hex2bin('81'));
     }
 
@@ -62,6 +66,20 @@ class OctetStringTest extends TestCase
     {
         $i = new OctetString('asd');
         $this->assertEquals('asd', $i->getValue());
+    }
+
+    public function testEquals()
+    {
+        $x1 = new OctetString('asd');
+        $x2 = new OctetString('asd');
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $x1 = new OctetString('10.10.10.10');
+        $this->assertFalse($x1->equals(new OctetString('asd')));
+        $this->assertFalse($x1->equals(new IpAddress('10.10.10.10')));
     }
 
 }

@@ -40,7 +40,7 @@ class VarBind
         return new Sequence($this->oid->toASN1(), $this->value->toASN1());
     }
 
-    public function equals($x): bool
+    public function equals(VarBind $x): bool
     {
         return $x instanceof self
             && $x->oid->equals($this->oid)

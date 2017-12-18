@@ -27,9 +27,9 @@ class VarBindList
         return $this->list;
     }
 
-    public function equals($x): bool
+    public function equals(VarBindList $x): bool
     {
-        if (!$x instanceof self || \count($x->list) !== \count($this->list)) {
+        if (\count($x->list) !== \count($this->list)) {
             return false;
         }
         foreach ($x->list as $i => $xVarBind) {

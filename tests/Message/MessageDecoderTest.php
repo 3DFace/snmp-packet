@@ -24,6 +24,15 @@ class MessageDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
+    public function testMessageV2CDecoded()
+    {
+        $x = MessageDecoder::fromBinary(hex2bin('302c020101040770726976617465a01e02010102010002010030133011060d2b0601040194780102070302000500'));
+        $this->assertInstanceOf(MessageV1::class, $x);
+    }
+
+    /**
+     * @throws DecodeError
+     */
     public function testMessageV3Decoded()
     {
         $x = MessageDecoder::fromBinary(hex2bin('303e020103301102042c22074a020300ffe30401040201030410300e0400020100020100040004000400301404000400a00e0204272900d20201000201003000'));
@@ -36,6 +45,7 @@ class MessageDecoderTest extends TestCase
     public function testBadVersionFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageDecoder::fromBinary(hex2bin('302c020109040770726976617465a01e02010102010002010030133011060d2b0601040194780102070302000500'));
     }
 
@@ -45,6 +55,7 @@ class MessageDecoderTest extends TestCase
     public function testBadASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageDecoder::fromBinary(hex2bin('00'));
     }
 
@@ -54,6 +65,7 @@ class MessageDecoderTest extends TestCase
     public function testNonSequenceFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageDecoder::fromBinary(hex2bin('0500'));
     }
 
@@ -63,6 +75,7 @@ class MessageDecoderTest extends TestCase
     public function testNoVersionAtBeginningFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         MessageDecoder::fromASN1(new Sequence(
             new OctetString('asd'),
             new Integer(1)));

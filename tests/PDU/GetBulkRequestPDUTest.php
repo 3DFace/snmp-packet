@@ -48,6 +48,7 @@ class GetBulkRequestPDUTest extends TestCase
     public function testNonContextFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetBulkRequestPDU::fromBinary(hex2bin('0500'));
     }
 
@@ -57,6 +58,7 @@ class GetBulkRequestPDUTest extends TestCase
     public function testBadSequenceCountFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetBulkRequestPDU::fromASN1(
             new ImplicitlyTaggedType(
                 GetBulkRequestPDU::TAG,
@@ -71,6 +73,7 @@ class GetBulkRequestPDUTest extends TestCase
     public function testBadReqIdElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetBulkRequestPDU::fromASN1(new ImplicitlyTaggedType(GetBulkRequestPDU::TAG, new Sequence(
             new OctetString('asd'),
             new Integer(1),
@@ -84,6 +87,7 @@ class GetBulkRequestPDUTest extends TestCase
     public function testBadErrStatusElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetBulkRequestPDU::fromASN1(new ImplicitlyTaggedType(GetBulkRequestPDU::TAG, new Sequence(
             new Integer(1),
             new OctetString('asd'),
@@ -97,6 +101,7 @@ class GetBulkRequestPDUTest extends TestCase
     public function testBadErrIndexElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetBulkRequestPDU::fromASN1(new ImplicitlyTaggedType(GetBulkRequestPDU::TAG, new Sequence(
             new Integer(1),
             new Integer(1),
@@ -110,6 +115,7 @@ class GetBulkRequestPDUTest extends TestCase
     public function testBadVarBindListElementFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         GetBulkRequestPDU::fromASN1(new ImplicitlyTaggedType(GetBulkRequestPDU::TAG, new Sequence(
             new Integer(1),
             new Integer(1),
@@ -126,6 +132,30 @@ class GetBulkRequestPDUTest extends TestCase
         $this->assertEquals(2, $pdu->getNonRepeaters());
         $this->assertEquals(3, $pdu->getMaxRepetitions());
         $this->assertTrue($var_bind_list->equals($pdu->getVariableBindings()));
+    }
+
+    public function testEquals()
+    {
+        $var_bind = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue());
+        $var_bind_list = new VarBindList($var_bind);
+        $x1 = new GetBulkRequestPDU(1, 2, 3, $var_bind_list);
+        $x2 = new GetBulkRequestPDU(1, 2, 3, $var_bind_list);
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $var_bind1 = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue());
+        $var_bind_list1 = new VarBindList($var_bind1);
+        $var_bind2 = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.1'), new NullValue());
+        $var_bind_list2 = new VarBindList($var_bind2);
+        $x1 = new GetBulkRequestPDU(1, 2, 3, $var_bind_list1);
+
+        $this->assertFalse($x1->equals(new GetBulkRequestPDU(2, 2, 3, $var_bind_list1)));
+        $this->assertFalse($x1->equals(new GetBulkRequestPDU(1, 1, 3, $var_bind_list1)));
+        $this->assertFalse($x1->equals(new GetBulkRequestPDU(1, 2, 5, $var_bind_list1)));
+        $this->assertFalse($x1->equals(new GetBulkRequestPDU(1, 2, 3, $var_bind_list2)));
+        $this->assertFalse($x1->equals(new GetBulkRequestPDU(4, 4, 4, $var_bind_list2)));
     }
 
 }

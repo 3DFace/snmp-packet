@@ -14,6 +14,7 @@ use dface\SnmpPacket\Exception\DecodeError;
 abstract class AbstractUnsigned32 implements DataType
 {
 
+    public const MIN = 0;
     public const MAX = 4294967295;
 
     /** @var int|string */
@@ -24,9 +25,13 @@ abstract class AbstractUnsigned32 implements DataType
      */
     public function __construct($value)
     {
-        if (gmp_cmp($value, 0) < 0 || gmp_cmp($value, self::MAX) > 0) {
+        if (gmp_cmp($value, 0) < 0) {
             /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
-            throw new \InvalidArgumentException('Counter32 must be in range [0...4294967295]');
+            throw new \InvalidArgumentException('Unsigned32 must be in range [' . self::MIN . '...' . self::MAX . ']');
+        }
+        if (gmp_cmp($value, self::MAX) > 0) {
+            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+            throw new \InvalidArgumentException('Unsigned32 must be in range [' . self::MIN . '...' . self::MAX . ']');
         }
         $this->value = $value;
     }

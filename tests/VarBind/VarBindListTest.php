@@ -41,6 +41,7 @@ class VarBindListTest extends TestCase
     public function testNonSequenceFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         VarBindList::fromBinary(hex2bin('0500'));
     }
 
@@ -50,6 +51,7 @@ class VarBindListTest extends TestCase
     public function testNonSequenceOfSequenceFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         VarBindList::fromASN1(new Sequence(new Integer(1)));
     }
 
@@ -62,13 +64,15 @@ class VarBindListTest extends TestCase
 
     public function testEquals()
     {
-        $var_bind = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue());
-        $list1 = new VarBindList($var_bind);
-        $list2 = new VarBindList($var_bind);
-        $list3 = new VarBindList();
+        $var_bind1 = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.0'), new NullValue());
+        $var_bind2 = new VarBind(new Oid('1.3.6.1.4.1.2680.1.2.7.3.2.1'), new NullValue());
+        $list1 = new VarBindList($var_bind1);
+        $list2 = new VarBindList($var_bind1);
+        $list3 = new VarBindList($var_bind1, $var_bind2);
+        $list4 = new VarBindList($var_bind2, $var_bind1);
         $this->assertTrue($list1->equals($list2));
         $this->assertFalse($list1->equals($list3));
-
+        $this->assertFalse($list1->equals($list4));
     }
 
 }

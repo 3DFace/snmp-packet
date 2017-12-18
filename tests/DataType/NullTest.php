@@ -37,6 +37,7 @@ class NullTest extends TestCase
     public function testNonUniversalFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         NullValue::fromBinary(hex2bin('430101'));
     }
 
@@ -46,6 +47,7 @@ class NullTest extends TestCase
     public function testNonNullAsn1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         NullValue::fromASN1((new OctetString('asd'))->asUnspecified());
     }
 
@@ -55,6 +57,7 @@ class NullTest extends TestCase
     public function testInvalidASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         NullValue::fromBinary(hex2bin('81'));
     }
 

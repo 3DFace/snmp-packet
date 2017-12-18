@@ -4,6 +4,7 @@
 namespace DataType;
 
 use ASN1\Type\UnspecifiedType;
+use dface\SnmpPacket\DataType\OctetString;
 use dface\SnmpPacket\DataType\Opaque;
 use dface\SnmpPacket\Exception\DecodeError;
 use PHPUnit\Framework\TestCase;
@@ -37,6 +38,7 @@ class OpaqueTest extends TestCase
     public function testNonApplicationFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         Opaque::fromBinary(hex2bin('0500'));
     }
 
@@ -46,6 +48,7 @@ class OpaqueTest extends TestCase
     public function testInvalidTagFails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         Opaque::fromASN1(UnspecifiedType::fromDER(hex2bin('430101'))->asApplication());
     }
 
@@ -55,6 +58,7 @@ class OpaqueTest extends TestCase
     public function testInvalidASN1Fails()
     {
         $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
         Opaque::fromBinary(hex2bin('81'));
     }
 
@@ -62,6 +66,20 @@ class OpaqueTest extends TestCase
     {
         $i = new Opaque('asd');
         $this->assertEquals('asd', $i->getValue());
+    }
+
+    public function testEquals()
+    {
+        $x1 = new Opaque('asd');
+        $x2 = new Opaque('asd');
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testNotEquals()
+    {
+        $x1 = new Opaque('asd');
+        $this->assertFalse($x1->equals(new Opaque('zxc')));
+        $this->assertFalse($x1->equals(new OctetString('asd')));
     }
 
 }

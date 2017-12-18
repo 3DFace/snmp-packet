@@ -79,7 +79,7 @@ abstract class AbstractBasicPDU implements PDU
         return $asn1->toDER();
     }
 
-    abstract public static function getTag(): int;
+    abstract protected static function getTag(): int;
 
     public function toASN1(): ImplicitlyTaggedType
     {
