@@ -5,7 +5,6 @@ namespace dface\SnmpPacket\PDU;
 
 use ASN1\Exception\DecodeException;
 use ASN1\Type\TaggedType;
-use ASN1\Type\UnspecifiedType;
 use dface\SnmpPacket\Exception\DecodeError;
 
 class PDUDecoder
@@ -19,7 +18,8 @@ class PDUDecoder
     public static function fromBinary(string $binary): PDU
     {
         try {
-            $tagged = UnspecifiedType::fromDER($binary)->asTagged();
+            /** @var TaggedType $tagged */
+            $tagged = TaggedType::fromDER($binary);
         } catch (DecodeException|\UnexpectedValueException $e) {
             throw new DecodeError('Cant decode PDU binary: ' . $e->getMessage(), 0, $e);
         }

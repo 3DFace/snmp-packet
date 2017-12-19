@@ -5,7 +5,6 @@ namespace dface\SnmpPacket\VarBind;
 
 use ASN1\Exception\DecodeException;
 use ASN1\Type\Constructed\Sequence;
-use ASN1\Type\UnspecifiedType;
 use dface\SnmpPacket\DataType\DataType;
 use dface\SnmpPacket\DataType\DataTypeDecoder;
 use dface\SnmpPacket\DataType\Oid;
@@ -86,11 +85,12 @@ class VarBind
     public static function fromBinary(string $binary): self
     {
         try {
-            $tagged = UnspecifiedType::fromDER($binary)->asSequence();
+            /** @var Sequence $sequence */
+            $sequence = Sequence::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError('Cant decode variable binding: ' . $e->getMessage(), 0, $e);
         }
-        return self::fromASN1($tagged);
+        return self::fromASN1($sequence);
     }
 
 }

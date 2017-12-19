@@ -3,7 +3,6 @@
 
 namespace dface\SnmpPacket\DataType;
 
-use ASN1\Component\Identifier;
 use ASN1\Element;
 use ASN1\Exception\DecodeException;
 use ASN1\Type\Primitive\NullType;
@@ -41,15 +40,11 @@ abstract class AbstractNoValue implements DataType
     public static function fromBinary(string $binary): self
     {
         try {
-            $bit_string = UnspecifiedType::fromDER($binary);
-            $class = $bit_string->typeClass();
-            if ($class !== Identifier::CLASS_CONTEXT_SPECIFIC) {
-                throw new DecodeError(__CLASS__ . ' expects asn1 context specific tag ');
-            }
+            $element = UnspecifiedType::fromDER($binary);
         } catch (DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }
-        return self::fromASN1($bit_string);
+        return self::fromASN1($element);
     }
 
     /**

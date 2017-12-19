@@ -53,7 +53,7 @@ class OctetString implements DataType
     public static function fromBinary(string $binary): self
     {
         try {
-            $str = Element::fromDER($binary)->asUnspecified();
+            $str = UnspecifiedType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }

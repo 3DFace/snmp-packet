@@ -20,11 +20,11 @@ class DataTypeDecoder
     public static function fromBinary(string $binary): DataType
     {
         try {
-            $tagged = UnspecifiedType::fromDER($binary);
+            $element = UnspecifiedType::fromDER($binary);
         } catch (DecodeException|\UnexpectedValueException $e) {
             throw new DecodeError('Cant decode value binary: ' . $e->getMessage(), 0, $e);
         }
-        return self::fromASN1($tagged);
+        return self::fromASN1($element);
     }
 
     /**

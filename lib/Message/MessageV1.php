@@ -8,7 +8,6 @@ use ASN1\Exception\DecodeException;
 use ASN1\Type\Constructed\Sequence;
 use ASN1\Type\Primitive\Integer;
 use ASN1\Type\Primitive\OctetString;
-use ASN1\Type\UnspecifiedType;
 use dface\SnmpPacket\Exception\DecodeError;
 use dface\SnmpPacket\PDU\PDU;
 use dface\SnmpPacket\PDU\PDUDecoder;
@@ -76,7 +75,8 @@ class MessageV1 implements Message
     public static function fromBinary(string $binary): self
     {
         try {
-            $seq = UnspecifiedType::fromDER($binary)->asSequence();
+            /** @var Sequence $seq */
+            $seq = Sequence::fromDER($binary);
             return self::fromASN1($seq);
         } catch (DecodeException | \UnexpectedValueException $e) {
             throw new DecodeError('Cant decode snmp message: ' . $e->getMessage(), 0, $e);

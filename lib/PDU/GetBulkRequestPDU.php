@@ -9,7 +9,6 @@ use ASN1\Type\Constructed\Sequence;
 use ASN1\Type\Primitive\Integer;
 use ASN1\Type\Tagged\ImplicitlyTaggedType;
 use ASN1\Type\TaggedType;
-use ASN1\Type\UnspecifiedType;
 use dface\SnmpPacket\Exception\DecodeError;
 use dface\SnmpPacket\VarBind\VarBindList;
 
@@ -124,7 +123,8 @@ class GetBulkRequestPDU implements PDU
     public static function fromBinary(string $binary): self
     {
         try {
-            $tagged = UnspecifiedType::fromDER($binary)->asTagged();
+            /** @var TaggedType $tagged */
+            $tagged = TaggedType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError('Cant decode PDU: ' . $e->getMessage(), 0, $e);
         }

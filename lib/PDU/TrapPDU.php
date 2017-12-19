@@ -152,7 +152,8 @@ class TrapPDU implements PDU
     public static function fromBinary(string $binary): self
     {
         try {
-            $tagged = Element::fromDER($binary)->asUnspecified()->asTagged();
+            /** @var TaggedType $tagged */
+            $tagged = TaggedType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError('Cant decode PDU: ' . $e->getMessage(), 0, $e);
         }

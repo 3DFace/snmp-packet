@@ -6,7 +6,6 @@ namespace dface\SnmpPacket\Message;
 
 use ASN1\Exception\DecodeException;
 use ASN1\Type\Constructed\Sequence;
-use ASN1\Type\UnspecifiedType;
 use dface\SnmpPacket\Exception\DecodeError;
 
 abstract class MessageDecoder
@@ -20,7 +19,8 @@ abstract class MessageDecoder
     public static function fromBinary(string $binary): Message
     {
         try {
-            $seq = UnspecifiedType::fromDER($binary)->asSequence();
+            /** @var Sequence $seq */
+            $seq = Sequence::fromDER($binary);
             return self::fromASN1($seq);
         } catch (DecodeException | \UnexpectedValueException $e) {
             throw new DecodeError('Cant decode snmp message: ' . $e->getMessage(), 0, $e);

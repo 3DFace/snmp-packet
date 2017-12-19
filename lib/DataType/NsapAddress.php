@@ -58,16 +58,12 @@ class NsapAddress implements DataType
     public static function fromBinary(string $binary): self
     {
         try {
-            $element = Element::fromDER($binary);
-            $class = $element->typeClass();
-            if ($class !== Identifier::CLASS_APPLICATION) {
-                throw new DecodeError(__CLASS__ . ' expects asn1 app class');
-            }
-            $app = $element->asUnspecified()->asApplication();
+            /** @var ApplicationType $element */
+            $element = ApplicationType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }
-        return static::fromASN1($app);
+        return static::fromASN1($element);
     }
 
     /**

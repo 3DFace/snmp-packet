@@ -63,7 +63,7 @@ class Integer32 implements DataType
     public static function fromBinary(string $binary): self
     {
         try {
-            $int = Element::fromDER($binary)->asUnspecified();
+            $int = UnspecifiedType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }

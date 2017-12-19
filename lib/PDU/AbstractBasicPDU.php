@@ -10,7 +10,6 @@ use ASN1\Type\Constructed\Sequence;
 use ASN1\Type\Primitive\Integer;
 use ASN1\Type\Tagged\ImplicitlyTaggedType;
 use ASN1\Type\TaggedType;
-use ASN1\Type\UnspecifiedType;
 use dface\SnmpPacket\Exception\DecodeError;
 use dface\SnmpPacket\VarBind\VarBindList;
 
@@ -100,7 +99,7 @@ abstract class AbstractBasicPDU implements PDU
     public static function fromASN1(TaggedType $obj): self
     {
         try {
-            $sequence = $obj->asImplicit(Element::TYPE_SEQUENCE, static::getTag())->asSequence();
+            $sequence = $obj->asImplicit(Element::TYPE_SEQUENCE)->asSequence();
             if (\count($sequence) !== 4) {
                 throw new DecodeError('PDU must be a sequence of [request_id, error, error_index, var_bind_list]');
             }
@@ -114,7 +113,6 @@ abstract class AbstractBasicPDU implements PDU
 
         $bindings = VarBindList::fromASN1($var_bind_list);
         return new static($req_id, $error_status, $error_index, $bindings);
-
     }
 
     /**
@@ -125,7 +123,8 @@ abstract class AbstractBasicPDU implements PDU
     public static function fromBinary(string $binary): self
     {
         try {
-            $tagged = UnspecifiedType::fromDER($binary)->asTagged();
+            /** @var TaggedType $tagged */
+            $tagged = TaggedType::fromDER($binary);
         } catch (\UnexpectedValueException|DecodeException $e) {
             throw new DecodeError('Cant decode PDU: ' . $e->getMessage(), 0, $e);
         }
