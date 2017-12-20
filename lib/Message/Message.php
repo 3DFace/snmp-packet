@@ -3,8 +3,9 @@
 
 namespace dface\SnmpPacket\Message;
 
-
 interface Message
 {
+
+    public function getVersion();
 
 }
