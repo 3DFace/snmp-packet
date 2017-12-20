@@ -22,6 +22,9 @@ class VarBindList
         $this->list = $list;
     }
 
+    /**
+     * @return VarBind[]
+     */
     public function getList(): array
     {
         return $this->list;
