@@ -136,13 +136,16 @@ class BasicPDUTest extends TestCase
 
     public function testPDUTags()
     {
-        $this->assertEquals(GetRequestPDU::TAG, GetRequestPDU::getTag());
-        $this->assertEquals(GetNextRequestPDU::TAG, GetNextRequestPDU::getTag());
-        $this->assertEquals(GetResponsePDU::TAG, GetResponsePDU::getTag());
-        $this->assertEquals(InformRequestPDU::TAG, InformRequestPDU::getTag());
-        $this->assertEquals(SetRequestPDU::TAG, SetRequestPDU::getTag());
-        $this->assertEquals(TrapV2PDU::TAG, TrapV2PDU::getTag());
-        $this->assertEquals(ReportPDU::TAG, ReportPDU::getTag());
+        $this->assertEquals(GetRequestPDU::TAG, GetRequestPDU::getBasicTag());
+        $this->assertEquals(GetNextRequestPDU::TAG, GetNextRequestPDU::getBasicTag());
+        $this->assertEquals(GetResponsePDU::TAG, GetResponsePDU::getBasicTag());
+        $this->assertEquals(InformRequestPDU::TAG, InformRequestPDU::getBasicTag());
+        $this->assertEquals(SetRequestPDU::TAG, SetRequestPDU::getBasicTag());
+        $this->assertEquals(TrapV2PDU::TAG, TrapV2PDU::getBasicTag());
+        $this->assertEquals(ReportPDU::TAG, ReportPDU::getBasicTag());
+
+        $pdu = new GetRequestPDU(0, 0, 0, new VarBindList());
+        $this->assertEquals(GetRequestPDU::TAG, $pdu->getTag());
     }
 
 }

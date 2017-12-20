@@ -179,6 +179,12 @@ class TrapPDUTest extends TestCase
         $this->assertTrue($var_bind_list->equals($pdu->getVariableBindings()));
     }
 
+    public function testTag()
+    {
+        $pdu = new TrapPDU('', '', 0, 0, 0, new VarBindList());
+        $this->assertEquals(TrapPDU::TAG, $pdu->getTag());
+    }
+
     public function testEquals()
     {
         $enterprise = '1.3.6.1.2.1.1.3.0';

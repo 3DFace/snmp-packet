@@ -43,6 +43,11 @@ abstract class AbstractBasicPDU implements PDU
         $this->variable_bindings = $variable_bindings;
     }
 
+    public function getTag(): int
+    {
+        return static::getBasicTag();
+    }
+
     public function getRequestId(): int
     {
         return $this->request_id;
@@ -78,7 +83,7 @@ abstract class AbstractBasicPDU implements PDU
         return $asn1->toDER();
     }
 
-    abstract protected static function getTag(): int;
+    abstract protected static function getBasicTag(): int;
 
     public function toASN1(): ImplicitlyTaggedType
     {
@@ -88,7 +93,7 @@ abstract class AbstractBasicPDU implements PDU
             new Integer(0),
             $this->variable_bindings->toASN1()
         );
-        return new ImplicitlyTaggedType(static::getTag(), $seq);
+        return new ImplicitlyTaggedType(static::getBasicTag(), $seq);
     }
 
     /**

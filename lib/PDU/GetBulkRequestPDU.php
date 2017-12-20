@@ -44,6 +44,11 @@ class GetBulkRequestPDU implements PDU
         $this->variable_bindings = $variable_bindings;
     }
 
+    public function getTag(): int
+    {
+        return self::TAG;
+    }
+
     public function getRequestId(): int
     {
         return $this->request_id;

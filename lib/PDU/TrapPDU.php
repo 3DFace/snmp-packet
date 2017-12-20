@@ -56,6 +56,11 @@ class TrapPDU implements PDU
         $this->variable_bindings = $bindings;
     }
 
+    public function getTag(): int
+    {
+        return self::TAG;
+    }
+
     public function getEnterprise(): string
     {
         return $this->enterprise;

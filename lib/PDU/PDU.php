@@ -8,6 +8,8 @@ use ASN1\Type\Tagged\ImplicitlyTaggedType;
 interface PDU
 {
 
+    public function getTag(): int;
+
     public function equals(PDU $pdu): bool;
 
     public function toASN1(): ImplicitlyTaggedType;

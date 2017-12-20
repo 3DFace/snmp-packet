@@ -8,7 +8,7 @@ class InformRequestPDU extends AbstractBasicPDU
 
     public const TAG = 6;
 
-    public static function getTag(): int
+    public static function getBasicTag(): int
     {
         return self::TAG;
     }

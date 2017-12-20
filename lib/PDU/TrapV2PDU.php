@@ -8,7 +8,7 @@ class TrapV2PDU extends AbstractBasicPDU
 
     public const TAG = 7;
 
-    public static function getTag(): int
+    public static function getBasicTag(): int
     {
         return self::TAG;
     }

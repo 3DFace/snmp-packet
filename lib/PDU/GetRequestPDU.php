@@ -8,7 +8,7 @@ class GetRequestPDU extends AbstractBasicPDU
 
     public const TAG = 0;
 
-    public static function getTag(): int
+    public static function getBasicTag(): int
     {
         return self::TAG;
     }
