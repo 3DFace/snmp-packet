@@ -92,6 +92,12 @@ class IpAddressTest extends TestCase
         $this->assertTrue($x1->equals($x2));
     }
 
+    public function testToString()
+    {
+        $x1 = new IpAddress('10.10.10.10');
+        $this->assertEquals('10.10.10.10', (string)$x1);
+    }
+
     public function testNotEquals()
     {
         $x1 = new IpAddress('10.10.10.10');

@@ -20,6 +20,11 @@ abstract class AbstractNoValue implements DataType
         return $val instanceof self;
     }
 
+    public function __toString(): string
+    {
+        return '';
+    }
+
     public function toASN1(): Element
     {
         $null = new NullType();

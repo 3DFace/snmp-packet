@@ -75,6 +75,13 @@ class OpaqueTest extends TestCase
         $this->assertTrue($x1->equals($x2));
     }
 
+    public function testToString()
+    {
+        $bin = hex2bin('a0a0');
+        $x1 = new Opaque($bin);
+        $this->assertEquals('a0a0', (string)$x1);
+    }
+
     public function testNotEquals()
     {
         $x1 = new Opaque('asd');

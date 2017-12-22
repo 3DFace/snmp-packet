@@ -44,6 +44,11 @@ class BitString implements DataType
             && $val->unused_bits === $this->unused_bits;
     }
 
+    public function __toString(): string
+    {
+        return bin2hex($this->value) . '/' . $this->unused_bits;
+    }
+
     public function toASN1(): Element
     {
         return new \ASN1\Type\Primitive\BitString($this->value, $this->unused_bits);

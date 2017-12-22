@@ -68,6 +68,12 @@ class AbstractUnsigned32Test extends TestCase
         $this->assertTrue($x1->equals($x2));
     }
 
+    public function testToString()
+    {
+        $x1 = new Counter32(123);
+        $this->assertEquals('123', (string)$x1);
+    }
+
     public function testNotEquals()
     {
         $x1 = new Counter32(123);

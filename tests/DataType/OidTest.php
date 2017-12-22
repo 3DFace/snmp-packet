@@ -91,6 +91,12 @@ class OidTest extends TestCase
         $this->assertTrue($x1->equals($x2));
     }
 
+    public function testToString()
+    {
+        $x1 = new Oid('1.3.6.1.2.1.4');
+        $this->assertEquals('1.3.6.1.2.1.4', (string)$x1);
+    }
+
     public function testNotEquals()
     {
         $x1 = new Oid('1.3.6.1.2.1.4');

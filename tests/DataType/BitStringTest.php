@@ -87,6 +87,12 @@ class BitStringTest extends TestCase
         $this->assertTrue($x1->equals($x2));
     }
 
+    public function testToString()
+    {
+        $x1 = new BitString(hex2bin('a0a0'), 1);
+        $this->assertEquals('a0a0/1', (string)$x1);
+    }
+
     public function testNotEquals()
     {
         $x1 = new BitString('asd', 0);

@@ -51,6 +51,11 @@ abstract class AbstractUnsigned32 implements DataType
         return $val instanceof static && gmp_cmp($val->value, $this->value) === 0;
     }
 
+    public function __toString(): string
+    {
+        return (string)$this->value;
+    }
+
     public function toASN1(): Element
     {
         $int = new Integer($this->value);

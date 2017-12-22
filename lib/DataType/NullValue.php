@@ -22,6 +22,11 @@ class NullValue implements DataType
         return $val instanceof self;
     }
 
+    public function __toString(): string
+    {
+        return '';
+    }
+
     public function toASN1(): Element
     {
         return new NullType();

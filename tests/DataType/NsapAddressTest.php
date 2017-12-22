@@ -76,6 +76,12 @@ class NsapAddressTest extends TestCase
         $this->assertTrue($x1->equals($x2));
     }
 
+    public function testToString()
+    {
+        $x1 = new NsapAddress('wat?');
+        $this->assertEquals('wat?', (string)$x1);
+    }
+
     public function testNotEquals()
     {
         $x1 = new NsapAddress('wat?');

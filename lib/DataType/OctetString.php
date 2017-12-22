@@ -34,6 +34,11 @@ class OctetString implements DataType
         return $val instanceof self && $val->value === $this->value;
     }
 
+    public function __toString(): string
+    {
+        return $this->value;
+    }
+
     public function toASN1(): Element
     {
         return new \ASN1\Type\Primitive\OctetString($this->value);

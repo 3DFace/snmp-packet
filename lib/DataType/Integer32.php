@@ -44,6 +44,11 @@ class Integer32 implements DataType
         return $val instanceof self && $val->value === $this->value;
     }
 
+    public function __toString(): string
+    {
+        return (string)$this->value;
+    }
+
     public function toASN1(): Element
     {
         return new Integer($this->value);

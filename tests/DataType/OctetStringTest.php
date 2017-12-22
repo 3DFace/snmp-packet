@@ -75,6 +75,12 @@ class OctetStringTest extends TestCase
         $this->assertTrue($x1->equals($x2));
     }
 
+    public function testToString()
+    {
+        $x1 = new OctetString('asd');
+        $this->assertEquals('asd', (string)$x1);
+    }
+
     public function testNotEquals()
     {
         $x1 = new OctetString('10.10.10.10');
