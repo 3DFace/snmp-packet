@@ -49,7 +49,7 @@ $err = $pdu->getErrorStatus();
 
 // iterate over bindings:
 $bindings = $pdu->getVariableBindings()->getList();
-foreach ($pdu as $var_bind) {
+foreach ($bindings as $var_bind) {
     printf("%s: %s\n", $var_bind->getOid(), $var_bind->getValue());
 }
 
