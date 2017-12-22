@@ -23,7 +23,8 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"dface\\SnmpPacket\\": "tests/"
+			"dface\\SnmpPacket\\": "tests/",
+			"dface\\SnmpPacket\\Examples\\": "examples/"
 		}
 	}
 }
