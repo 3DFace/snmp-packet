@@ -138,7 +138,7 @@ class BasicPDUTest extends TestCase
     {
         $this->assertEquals(GetRequestPDU::TAG, GetRequestPDU::getBasicTag());
         $this->assertEquals(GetNextRequestPDU::TAG, GetNextRequestPDU::getBasicTag());
-        $this->assertEquals(GetResponsePDU::TAG, GetResponsePDU::getBasicTag());
+        $this->assertEquals(ResponsePDU::TAG, ResponsePDU::getBasicTag());
         $this->assertEquals(InformRequestPDU::TAG, InformRequestPDU::getBasicTag());
         $this->assertEquals(SetRequestPDU::TAG, SetRequestPDU::getBasicTag());
         $this->assertEquals(TrapV2PDU::TAG, TrapV2PDU::getBasicTag());

@@ -30,10 +30,10 @@ class PDUDecoderTest extends TestCase
     /**
      * @throws DecodeError
      */
-    public function testGetResponsePDUDecoded()
+    public function testResponsePDUDecoded()
     {
         $x = PDUDecoder::fromBinary(hex2bin('a21e02010102010002010030133011060d2b0601040194780102070302000500'));
-        $this->assertInstanceOf(GetResponsePDU::class, $x);
+        $this->assertInstanceOf(ResponsePDU::class, $x);
     }
 
     /**

@@ -3,7 +3,7 @@
 
 namespace dface\SnmpPacket\PDU;
 
-class GetResponsePDU extends AbstractBasicPDU
+class ResponsePDU extends AbstractBasicPDU
 {
 
     public const TAG = 2;

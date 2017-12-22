@@ -39,8 +39,8 @@ class PDUDecoder
                 return GetRequestPDU::fromASN1($pdu_obj);
             case GetNextRequestPDU::TAG:
                 return GetNextRequestPDU::fromASN1($pdu_obj);
-            case GetResponsePDU::TAG:
-                return GetResponsePDU::fromASN1($pdu_obj);
+            case ResponsePDU::TAG:
+                return ResponsePDU::fromASN1($pdu_obj);
             case SetRequestPDU::TAG:
                 return SetRequestPDU::fromASN1($pdu_obj);
             case TrapPDU::TAG:
