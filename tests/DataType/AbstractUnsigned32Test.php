@@ -3,6 +3,10 @@
 
 namespace DataType;
 
+use ASN1\Component\Identifier;
+use ASN1\Type\Primitive\Integer;
+use ASN1\Type\Tagged\ApplicationType;
+use ASN1\Type\Tagged\ImplicitlyTaggedType;
 use dface\SnmpPacket\DataType\Counter32;
 use dface\SnmpPacket\DataType\TimeTicks;
 use dface\SnmpPacket\Exception\DecodeError;
@@ -23,6 +27,62 @@ class AbstractUnsigned32Test extends TestCase
         new Counter32(Counter32::MAX);
         $this->expectException(\InvalidArgumentException::class);
         new Counter32(Counter32::MAX + 1);
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testLowLimitDecode()
+    {
+        /** @var ApplicationType $x1 */
+        $x1 = ApplicationType::fromDER(
+            (new ImplicitlyTaggedType(
+                Counter32::TAG,
+                new Integer(Counter32::MIN),
+                Identifier::CLASS_APPLICATION)
+            )->toDER()
+        );
+        Counter32::fromASN1($x1);
+
+        $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
+        /** @var ApplicationType $x2 */
+        $x2 = ApplicationType::fromDER(
+            (new ImplicitlyTaggedType(
+                Counter32::TAG,
+                new Integer(Counter32::MIN - 1),
+                Identifier::CLASS_APPLICATION)
+            )->toDER()
+        );
+        Counter32::fromASN1($x2);
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testHighLimitDecode()
+    {
+        /** @var ApplicationType $x1 */
+        $x1 = ApplicationType::fromDER(
+            (new ImplicitlyTaggedType(
+                Counter32::TAG,
+                new Integer(Counter32::MAX),
+                Identifier::CLASS_APPLICATION)
+            )->toDER()
+        );
+        Counter32::fromASN1($x1);
+
+        $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
+        /** @var ApplicationType $x2 */
+        $x2 = ApplicationType::fromDER(
+            (new ImplicitlyTaggedType(
+                Counter32::TAG,
+                new Integer(Counter32::MAX + 1),
+                Identifier::CLASS_APPLICATION)
+            )->toDER()
+        );
+        Counter32::fromASN1($x2);
     }
 
     public function testGetValue()

@@ -61,9 +61,15 @@ class VarBind
             $oid_obj = $var_bind->at(0);
             $val_obj = $var_bind->at(1);
             $oid_str = $oid_obj->asObjectIdentifier()->oid();
+
+        } catch (\OutOfBoundsException|\UnexpectedValueException $e) {
+            throw new DecodeError('Variable binding must be a sequence of [oid, value]', 0, $e);
+        }
+
+        try {
             $oid = new Oid($oid_str);
-        } catch (\OutOfBoundsException|\UnexpectedValueException  $e) {
-            throw new DecodeError('Variable binding must be a sequence of [oid, value]');
+        } catch (\InvalidArgumentException $e) {
+            throw new DecodeError($e->getMessage(), 0, $e);
         }
 
         $val_snmp = DataTypeDecoder::fromASN1($val_obj);

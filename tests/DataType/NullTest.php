@@ -61,4 +61,15 @@ class NullTest extends TestCase
         NullValue::fromBinary(hex2bin('81'));
     }
 
+    public function testEquals(){
+        $x1 = new NullValue();
+        $x2 = new NullValue();
+        $this->assertTrue($x1->equals($x2));
+    }
+
+    public function testToString(){
+        $x1 = new NullValue();
+        $this->assertEquals('', (string)$x1);
+    }
+
 }

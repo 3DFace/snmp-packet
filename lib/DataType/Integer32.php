@@ -18,6 +18,10 @@ class Integer32 implements DataType
     /** @var int */
     private $value;
 
+    /**
+     * @param int $value
+     * @throws \InvalidArgumentException
+     */
     public function __construct(int $value)
     {
         if ($value < self::MIN) {
@@ -87,7 +91,11 @@ class Integer32 implements DataType
         } catch (\UnexpectedValueException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }
-        return new self($value);
+        try {
+            return new self($value);
+        } catch (\InvalidArgumentException $e) {
+            throw new DecodeError($e->getMessage(), 0, $e);
+        }
     }
 
 }

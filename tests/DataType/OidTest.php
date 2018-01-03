@@ -3,6 +3,7 @@
 
 namespace DataType;
 
+use ASN1\Type\Primitive\ObjectIdentifier;
 use ASN1\Type\Primitive\OctetString;
 use dface\SnmpPacket\DataType\Oid;
 use dface\SnmpPacket\Exception\DecodeError;
@@ -64,6 +65,16 @@ class OidTest extends TestCase
     /**
      * @throws DecodeError
      */
+    public function testInvalidSnmpOidAsn1Fails()
+    {
+        $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
+        Oid::fromASN1((new ObjectIdentifier('0.3'))->asUnspecified());
+    }
+
+    /**
+     * @throws DecodeError
+     */
     public function testInvalidASN1Fails()
     {
         $this->expectException(DecodeError::class);
@@ -71,11 +82,25 @@ class OidTest extends TestCase
         Oid::fromBinary(hex2bin('81'));
     }
 
-    public function testBadOidFails()
+    public function testBadOidFails1()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(0);
-        new Oid('10');
+        new Oid('2');
+    }
+
+    public function testBadOidFails2()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionCode(0);
+        new Oid('1.2');
+    }
+
+    public function testAllowedPrefixesPass()
+    {
+        $this->assertEquals('', new Oid(''));
+        $this->assertEquals('1', new Oid('1'));
+        $this->assertEquals('1.3', new Oid('1.3'));
     }
 
     public function testGetValue()

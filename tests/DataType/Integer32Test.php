@@ -3,6 +3,7 @@
 
 namespace DataType;
 
+use ASN1\Type\Primitive\Integer;
 use ASN1\Type\Primitive\OctetString;
 use dface\SnmpPacket\DataType\Integer32;
 use dface\SnmpPacket\DataType\TimeTicks;
@@ -76,6 +77,28 @@ class Integer32Test extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(0);
         new Integer32(Integer32::MAX + 1);
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testLowLimitDecode()
+    {
+        Integer32::fromASN1((new Integer(Integer32::MIN))->asUnspecified());
+        $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
+        Integer32::fromASN1((new Integer(Integer32::MIN - 1))->asUnspecified());
+    }
+
+    /**
+     * @throws DecodeError
+     */
+    public function testHighLimitDecode()
+    {
+        Integer32::fromASN1((new Integer(Integer32::MAX))->asUnspecified());
+        $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
+        Integer32::fromASN1((new Integer(Integer32::MAX + 1))->asUnspecified());
     }
 
     public function testGetValue()

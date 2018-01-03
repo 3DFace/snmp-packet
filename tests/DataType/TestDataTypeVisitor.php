@@ -5,6 +5,11 @@ namespace dface\SnmpPacket\DataType;
 
 class TestDataTypeVisitor implements DataTypeVisitor
 {
+    /**
+     * @param int $value
+     * @return Integer32|mixed
+     * @throws \InvalidArgumentException
+     */
     public function visitInteger32(int $value)
     {
         return new Integer32($value);
@@ -15,6 +20,11 @@ class TestDataTypeVisitor implements DataTypeVisitor
         return new OctetString($value);
     }
 
+    /**
+     * @param string $value
+     * @return Oid|mixed
+     * @throws \InvalidArgumentException
+     */
     public function visitOid(string $value)
     {
         return new Oid($value);
@@ -30,6 +40,11 @@ class TestDataTypeVisitor implements DataTypeVisitor
         return new NullValue();
     }
 
+    /**
+     * @param string $ipString
+     * @return IpAddress|mixed
+     * @throws \InvalidArgumentException
+     */
     public function visitIpAddress(string $ipString)
     {
         return new IpAddress($ipString);
@@ -40,26 +55,51 @@ class TestDataTypeVisitor implements DataTypeVisitor
         return new NsapAddress($octetString);
     }
 
+    /**
+     * @param int|string $value
+     * @return Counter32|mixed
+     * @throws \InvalidArgumentException
+     */
     public function visitCounter32($value)
     {
         return new Counter32($value);
     }
 
+    /**
+     * @param int|string $value
+     * @return Counter64|mixed
+     * @throws \InvalidArgumentException
+     */
     public function visitCounter64($value)
     {
         return new Counter64($value);
     }
 
+    /**
+     * @param int $value
+     * @return Gauge32|mixed
+     * @throws \InvalidArgumentException
+     */
     public function visitGauge32($value)
     {
         return new Gauge32($value);
     }
 
+    /**
+     * @param int|string $value
+     * @return UInteger32|mixed
+     * @throws \InvalidArgumentException
+     */
     public function visitUInteger32($value)
     {
         return new UInteger32($value);
     }
 
+    /**
+     * @param int $value
+     * @return TimeTicks|mixed
+     * @throws \InvalidArgumentException
+     */
     public function visitTimeTicks($value)
     {
         return new TimeTicks($value);

@@ -44,7 +44,7 @@ class DataTypeVisitorTest extends TestCase
 
     public function testOidVisited()
     {
-        $this->ensureVisited(new Oid('1.1'));
+        $this->ensureVisited(new Oid('1.3'));
     }
 
     public function testBitStringVisited()

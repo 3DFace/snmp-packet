@@ -71,6 +71,18 @@ class VarBindTest extends TestCase
     /**
      * @throws DecodeError
      */
+    public function testBadSnmpOidFails()
+    {
+        $this->expectException(DecodeError::class);
+        $this->expectExceptionCode(0);
+        VarBind::fromASN1(new Sequence(
+            new ObjectIdentifier('2.2'),
+            new Integer(1)));
+    }
+
+    /**
+     * @throws DecodeError
+     */
     public function testBadValueElementFails()
     {
         $this->expectException(DecodeError::class);

@@ -18,6 +18,10 @@ class IpAddress implements DataType
     /** @var string */
     private $value;
 
+    /**
+     * @param string $ip
+     * @throws \InvalidArgumentException
+     */
     public function __construct(string $ip)
     {
         if (ip2long($ip) === false) {
@@ -92,7 +96,12 @@ class IpAddress implements DataType
             throw new DecodeError('IpAddress must be a binary of length 4');
         }
         $ip = \ord($value[0]) . '.' . \ord($value[1]) . '.' . \ord($value[2]) . '.' . \ord($value[3]);
-        return new static($ip);
+        try {
+            return new static($ip);
+        } catch (\InvalidArgumentException $e) {
+            // seems it will never happen, don't know how to write a test
+            throw new DecodeError($e->getMessage(), 0, $e);
+        }
     }
 
 }

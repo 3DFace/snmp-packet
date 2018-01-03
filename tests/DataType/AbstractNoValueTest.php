@@ -51,4 +51,9 @@ class AbstractNoValueTest extends TestCase
         NoSuchObject::fromASN1((new Integer(1))->asUnspecified());
     }
 
+    public function testToString(){
+        $x = new NoSuchObject();
+        $this->assertEquals('', (string)$x);
+    }
+
 }

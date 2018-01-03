@@ -22,15 +22,14 @@ abstract class AbstractUnsigned32 implements DataType
 
     /**
      * @param int|string $value
+     * @throws \InvalidArgumentException
      */
     public function __construct($value)
     {
-        if (gmp_cmp($value, 0) < 0) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
+        if (gmp_cmp($value, self::MIN) < 0) {
             throw new \InvalidArgumentException('Unsigned32 must be in range [' . self::MIN . '...' . self::MAX . ']');
         }
         if (gmp_cmp($value, self::MAX) > 0) {
-            /** @noinspection ExceptionsAnnotatingAndHandlingInspection */
             throw new \InvalidArgumentException('Unsigned32 must be in range [' . self::MIN . '...' . self::MAX . ']');
         }
         $this->value = $value;
@@ -97,7 +96,11 @@ abstract class AbstractUnsigned32 implements DataType
         } catch (\UnexpectedValueException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }
-        return new static($value);
+        try {
+            return new static($value);
+        } catch (\InvalidArgumentException $e) {
+            throw new DecodeError($e->getMessage(), 0, $e);
+        }
     }
 
 }

@@ -15,11 +15,14 @@ class Oid implements DataType
     /** @var string */
     private $value;
 
+    /**
+     * @param string $value
+     * @throws \InvalidArgumentException
+     */
     public function __construct(string $value)
     {
-        /** @noinspection NotOptimalRegularExpressionsInspection */
-        if (!preg_match('/^([1-9][0-9]{0,3}|0)(\.([1-9][0-9]{0,3}|0))+$/', $value)) {
-            throw new \InvalidArgumentException('Bad oid: ' . $value);
+        if (!preg_match('/^(1(\.3(\.([1-9]\d{0,3}|0))*){0,1}){0,1}$/', $value)) {
+            throw new \InvalidArgumentException('Bad SNMP oid: ' . $value);
         }
         $this->value = $value;
     }
@@ -82,7 +85,12 @@ class Oid implements DataType
         } catch (\UnexpectedValueException $e) {
             throw new DecodeError(__CLASS__ . ' decode error: ' . $e->getMessage(), 0, $e);
         }
-        return new self($value);
+        try {
+            return new self($value);
+        } catch (\InvalidArgumentException $e) {
+            // underlying lib should return valid oid, so this will never happen... how to test?
+            throw new DecodeError($e->getMessage(), 0, $e);
+        }
     }
 
 }
